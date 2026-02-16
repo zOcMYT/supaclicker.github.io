@@ -73,6 +73,29 @@ defButton.addEventListener('click', () => {
     }
 }})
 
+defButton.addEventListener('touchstart', () => {
+    numClickRng = Math.round(Math.random() * maxRng) + 1;
+    timesClicked += numClickRng;
+    defButton.textContent = timesClicked;
+    nice();
+    if (timesClicked >= 1000000000) {
+    defButton.style.fontSize = '8vw';
+    if (timesClicked >= 1000000000) {
+        document.body.style.backgroundColor = "#382d3a"
+        defButton.style.fontSize = '7vw';
+        if (timesClicked >= 1000000000000000) {
+            document.body.style.backgroundColor = "#155350"
+            defButton.style.fontSize = '6vw';
+            if (timesClicked >= 1000000000000000000000n) {
+                document.body.style.backgroundColor = "#355837"
+                defButton.style.fontSize = '5vw';
+        }
+    }
+}
+    else {
+        defButton.style.fontSize = '10vw';
+    }
+}})
 //Set up the 'upgradeClickButton' (the button you upgrade with)
 upgradeClickButton.style.width = '50%';
 upgradeClickButton.style.height = '25%';
@@ -91,6 +114,16 @@ upgradeClickButton.textContent = "Upgrade Click Value " + "(" + String(upgradeCo
 document.body.append(upgradeClickButton);
 
 upgradeClickButton.addEventListener('click', () => {
+    if (timesClicked >= upgradeCost) {
+        timesClicked -= upgradeCost;
+        upgradeCost = Math.floor(upgradeCost *= 2.9);
+        defButton.textContent = timesClicked;
+        maxRng *= 3;
+        upgradeClickButton.textContent = "Upgrade Click Value " + "(" + String(upgradeCost) + ")";
+    }
+})
+
+upgradeClickButton.addEventListener('touchstart', () => {
     if (timesClicked >= upgradeCost) {
         timesClicked -= upgradeCost;
         upgradeCost = Math.floor(upgradeCost *= 2.9);
