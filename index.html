@@ -60,7 +60,7 @@ defButton.addEventListener('click', () => {
     timesClicked += numClickRng;
     defButton.textContent = timesClicked;
     nice();
-    crashChance = randomNumber(1, 100);
+    crashChance = Math.random()* 100 + 1;
     if (timesClicked >= 1000000000000000) { 
         if (crashChance == 1) {
             window.close();
@@ -68,7 +68,7 @@ defButton.addEventListener('click', () => {
     }
     if (timesClicked >= 1000000000) {
     defButton.style.fontSize = '8vw';
-    if (timesClicked >= 1000000000) {
+    if (timesClicked >= 100000000000) {
         document.body.style.backgroundColor = "#382d3a"
         defButton.style.fontSize = '7vw';
         if (timesClicked >= 1000000000000000) {
