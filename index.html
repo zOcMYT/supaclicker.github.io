@@ -34,40 +34,12 @@ function nice() {
 function wait(time) {
     return new Promise(resolve => setTimeout(resolve, time));
 }
-        
-function chroma(item, property, speed) {
-    while (true) {
-    let color = "red"
-    item.style.property = color;
-    wait(speed);
-
-    let color = "orange"
-    item.style.property = color;
-    wait(speed);
-
-    let color = "yellow"
-    item.style.property = color;
-    wait(speed);
-
-    let color = "green"
-    item.style.property = color;
-    wait(speed);
-
-    let color = "blue"
-    item.style.property = color;
-    wait(speed);
-
-    let color = "purple"
-    item.style.property = color;
-    wait(speed);
-    }
-}
 
 //Set up the 'def button' (the button you click)
 defButton.style.width = '70%';
 defButton.style.height = '50%';
 defButton.style.fontSize = '10vw';
-chroma(defButton, background, 100);
+defButton.style.backgroundColor = "purple";
 defButton.style.borderColor = "#ffffff";
 defButton.style.borderRadius = "1vw";
 defButton.style.borderWidth = "1vw";
@@ -174,6 +146,7 @@ upgradeClickButton.addEventListener('touchstart', () => {
 */
     </script>
 </html>
+
 
 
 
