@@ -115,6 +115,7 @@
         // --- DOM Elements ---
         const defButton = document.createElement('button');
         const upgradeClickButton = document.createElement('button');
+        const clickSound = new Audio('click.mp3'); // Load the sound file
 
         // --- Functions ---
 
@@ -162,6 +163,7 @@
             defButton.textContent = timesClicked.toLocaleString(); // Format for readability
             applyNiceEffect(numClickRng);
             updateVisuals(timesClicked);
+            playSound(); // Play the sound
         }
 
         /**
@@ -181,6 +183,11 @@
                 // Re-apply visuals in case thresholds were met/unmet by spending
                 updateVisuals(timesClicked);
             }
+        }
+
+        function playSound() {
+            clickSound.currentTime = 0; // Reset sound to start
+            clickSound.play();
         }
 
         // --- Initialization ---
@@ -209,5 +216,3 @@
     </script>
 </body>
 </html>
-
-
