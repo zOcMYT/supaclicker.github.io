@@ -1,154 +1,211 @@
 <!DOCTYPE html>
-<header>
-</header>
-
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clicker Game</title>
     <style>
         body {
-    background-color: black;
-    transition: all 0.5s ease;
-    }
-    </style>
-    <script>
-//Set variables
-var timesClicked = 0;
-var numClickRng = 0;
-const defButton = document.createElement('button');
-var levelUpAmount = 25;
-var level = 0;
-var maxRng = 5;
-const upgradeClickButton = document.createElement('button');
-var upgradeCost = 250;
+            background-color: black;
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s'); /* Default background */
+            background-size: cover;
+            background-position: center;
+            transition: background-image 0.5s ease-in-out, background-color 0.5s ease-in-out;
+            margin: 0;
+            overflow: hidden; /* Prevent scrollbars */
+            font-family: sans-serif;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Ensure body takes full viewport height */
+        }
 
-//Functions
-function nice() {
-    if (numClickRng >= maxRng * 0.75) {
-        defButton.style.filter = "blur(10px)"
-        setTimeout(() =>{
-        defButton.style.filter = "none"
-        }, 50)
+        .main-button {
+            width: 70%;
+            height: 50%;
+            font-size: 10vw;
+            background-color: purple;
+            border: 1vw solid #ffffff;
+            border-radius: 1vw;
+            color: #ffffff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            transition: filter 0.05s ease-in-out, font-size 0.3s ease-in-out; /* Smooth font size changes */
+            max-width: fit-content; /* Correctly applied */
+            box-sizing: border-box; /* Include padding and border in element's total width and height */
+        }
 
-    }
-}
+        .main-button.glowing {
+            filter: blur(10px);
+        }
 
-function wait(time) {
-    return new Promise(resolve => setTimeout(resolve, time));
-}
+        .upgrade-button {
+            width: 50%;
+            height: 25%;
+            font-size: 3vw;
+            background-color: rgb(54, 41, 58);
+            border: 1vw solid #ffffff;
+            border-radius: 1vw;
+            color: #ffffff;
+            position: absolute;
+            bottom: 5%; /* Position relative to bottom */
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            box-sizing: border-box;
+        }
 
-document.style.backgroundImage = "url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s)";
-
-//Set up the 'def button' (the button you click)
-defButton.style.width = '70%';
-defButton.style.height = '50%';
-defButton.style.fontSize = '10vw';
-defButton.style.backgroundColor = "purple";
-defButton.style.borderColor = "#ffffff";
-defButton.style.borderRadius = "1vw";
-defButton.style.borderWidth = "1vw";
-defButton.style.color = "#ffffff";
-defButton.style.position = 'absolute';
-defButton.style.top = '50%';
-defButton.style.left = '50%';
-defButton.style.transform = 'translate(-50%, -50%)';
-defButton.textContent = timesClicked;
-defButton.textContent.maxWidth = 'fit-content'
-
-document.body.append(defButton);
-
-defButton.addEventListener('click', () => {
-    numClickRng = Math.round(Math.random() * maxRng) + 1;
-    timesClicked += numClickRng;
-    defButton.textContent = timesClicked;
-    nice();\
-    if (timesClicked >= 1000000000) {
-    defButton.style.fontSize = '8vw';
-    if (timesClicked >= 1000000000) {
-        document.body.style.backgroundImage = "url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvD90oZ0SLUt9Hizd90BlaEeI4BtMrHiO1HA&s)";
-        defButton.style.fontSize = '7vw';
-        if (timesClicked >= 1000000000000000) {
-            document.body.style.backgroundImage = "url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s)";
-            defButton.style.fontSize = '6vw';
-            defButton.style.fontSize = '5vw';
-            if (timesClicked >= 1000000000000000000000n) {
-                document.body.style.backgroundImage = "url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg95X8tdImD1AZZ0dEnSCZdEx3t3iWyXwqsA&s)";
-                defButton.style.fontSize = '5vw';
-                    if (timesClicked >= 1000000000000000000000000000n) {
-                    document.body.style.backgroundImage = "url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9-ANfPq_7ESF0UHnzM6s3HLaSHie6F140Q&s)";
-                    defButton.style.fontSize = '4vw';
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-button {
+                font-size: 15vw; /* Larger font on smaller screens */
+                width: 90%;
+                height: 40%;
+            }
+            .upgrade-button {
+                font-size: 5vw;
+                width: 80%;
+                height: 20%;
+                bottom: 2%;
             }
         }
-    }
-}
-    else {
-        defButton.style.fontSize = '10vw';
-    }
-}})
-/*
-defButton.addEventListener('touchstart', () => {
-    numClickRng = Math.round(Math.random() * maxRng) + 1;
-    timesClicked += numClickRng;
-    defButton.textContent = timesClicked;
-    nice();
-    if (timesClicked >= 1000000000) {
-    defButton.style.fontSize = '8vw';
-    if (timesClicked >= 1000000000) {
-        document.body.style.backgroundColor = "#382d3a"
-        defButton.style.fontSize = '7vw';
-        if (timesClicked >= 1000000000000000) {
-            document.body.style.backgroundColor = "#155350"
-            defButton.style.fontSize = '6vw';
-            if (timesClicked >= 1000000000000000000000n) {
-                document.body.style.backgroundColor = "#355837"
-                defButton.style.fontSize = '5vw';
+    </style>
+</head>
+<body>
+
+    <script>
+        // --- Constants ---
+        const BACKGROUNDS = {
+            default: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s',
+            level1: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvD90oZ0SLUt9Hizd90BlaEeI4BtMrHiO1HA&s', // 1 Billion
+            level2: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s', // 1 Quadrillion
+            level3: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg95X8tdImD1AZZ0dEnSCZdEx3t3iWyXwqsA&s', // 1 Quintillion
+            level4: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9-ANfPq_7ESF0UHnzM6s3HLaSHie6F140Q&s'  // 1 Sextillion
+        };
+
+        const FONT_SIZES = {
+            default: '10vw',
+            large: '8vw',
+            larger: '7vw',
+            largest: '6vw',
+            extraLarge: '5vw',
+            extraExtraLarge: '4vw'
+        };
+
+        const LEVEL_THRESHOLDS = [
+            { value: 1_000_000_000n, bg: BACKGROUNDS.level1, fs: FONT_SIZES.large },
+            { value: 1_000_000_000_000_000n, bg: BACKGROUNDS.level2, fs: FONT_SIZES.largest }, // Quadrillion
+            { value: 1_000_000_000_000_000_000_000n, bg: BACKGROUNDS.level3, fs: FONT_SIZES.extraLarge }, // Quintillion
+            { value: 1_000_000_000_000_000_000_000_000n, bg: BACKGROUNDS.level4, fs: FONT_SIZES.extraExtraLarge } // Sextillion
+        ];
+
+        // Initial upgrade cost and click multiplier
+        let currentUpgradeCost = 250;
+        let clickMultiplier = 1; // Represents maxRng initially
+        let maxRng = 5; // Initial max random value
+
+        // Game state
+        let timesClicked = 0n; // Use BigInt for potentially very large numbers
+
+        // --- DOM Elements ---
+        const defButton = document.createElement('button');
+        const upgradeClickButton = document.createElement('button');
+
+        // --- Functions ---
+
+        /**
+         * Applies a visual blur effect to the main button when a high click value is generated.
+         */
+        function applyNiceEffect(clickValue) {
+            if (clickValue >= maxRng * 0.75) {
+                defButton.classList.add('glowing');
+                setTimeout(() => {
+                    defButton.classList.remove('glowing');
+                }, 50);
+            }
         }
-    }
-}
 
-    else {
-        defButton.style.fontSize = '10vw';
-    }
-}})
-*/
-//Set up the 'upgradeClickButton' (the button you upgrade with)
-upgradeClickButton.style.width = '50%';
-upgradeClickButton.style.height = '25%';
-upgradeClickButton.style.fontSize = '3vw';
-upgradeClickButton.style.backgroundColor = "rgb(54, 41, 58)";
-upgradeClickButton.style.borderColor = "#ffffff";
-upgradeClickButton.style.borderRadius = "1vw";
-upgradeClickButton.style.borderWidth = "1vw";
-upgradeClickButton.style.color = "#ffffff";
-upgradeClickButton.style.position = 'absolute';
-upgradeClickButton.style.top = '87%';
-upgradeClickButton.style.left = '50%';
-upgradeClickButton.style.transform = 'translate(-50%, -50%)';
-upgradeClickButton.textContent = "Upgrade Click Value " + "(" + String(upgradeCost) + ")";
+        /**
+         * Updates the visual appearance of the main button based on the total clicks.
+         * Changes background image and font size for different thresholds.
+         */
+        function updateVisuals(currentClicks) {
+            let applied = false;
+            // Iterate through thresholds from highest to lowest to ensure correct application
+            for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
+                if (currentClicks >= LEVEL_THRESHOLDS[i].value) {
+                    document.body.style.backgroundImage = `url('${LEVEL_THRESHOLDS[i].bg}')`;
+                    defButton.style.fontSize = LEVEL_THRESHOLDS[i].fs;
+                    applied = true;
+                    break; // Stop once the highest applicable threshold is found
+                }
+            }
+            // If no threshold is met, reset to default
+            if (!applied) {
+                document.body.style.backgroundImage = `url('${BACKGROUNDS.default}')`;
+                defButton.style.fontSize = FONT_SIZES.default;
+            }
+        }
 
-document.body.append(upgradeClickButton);
+        /**
+         * Handles the click event on the main button.
+         * Increments click count, updates display, and triggers visual effects.
+         */
+        function handleMainButtonClick() {
+            const numClickRng = BigInt(Math.floor(Math.random() * maxRng)) + 1n; // Use BigInt for random value
+            timesClicked += numClickRng;
+            defButton.textContent = timesClicked.toLocaleString(); // Format for readability
+            applyNiceEffect(numClickRng);
+            updateVisuals(timesClicked);
+        }
 
-upgradeClickButton.addEventListener('click', () => {
-    if (timesClicked >= upgradeCost) {
-        timesClicked -= upgradeCost;
-        upgradeCost = Math.floor(upgradeCost *= 2.9);
-        defButton.textContent = timesClicked;
-        maxRng *= 3;
-        upgradeClickButton.textContent = "Upgrade Click Value " + "(" + String(upgradeCost) + ")";
-    }
-})
-/*
-upgradeClickButton.addEventListener('touchstart', () => {
-    if (timesClicked >= upgradeCost) {
-        timesClicked -= upgradeCost;
-        upgradeCost = Math.floor(upgradeCost *= 2.9);
-        defButton.textContent = timesClicked;
-        maxRng *= 3;
-        upgradeClickButton.textContent = "Upgrade Click Value " + "(" + String(upgradeCost) + ")";
-    }
-})
-*/
+        /**
+         * Handles the click event on the upgrade button.
+         * Upgrades click value if enough points are available.
+         */
+        function handleUpgradeButtonClick() {
+            if (timesClicked >= BigInt(currentUpgradeCost)) {
+                timesClicked -= BigInt(currentUpgradeCost);
+                currentUpgradeCost = Math.floor(currentUpgradeCost * 2.9); // Upgrade cost increases
+                maxRng = Math.floor(maxRng * 3); // Click value multiplier increases
+                
+                // Update button text and display
+                defButton.textContent = timesClicked.toLocaleString();
+                upgradeClickButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
+                
+                // Re-apply visuals in case thresholds were met/unmet by spending
+                updateVisuals(timesClicked);
+            }
+        }
+
+        // --- Initialization ---
+
+        // Set up the 'def button' (the button you click)
+        defButton.className = 'main-button'; // Use class for styling
+        defButton.textContent = timesClicked.toLocaleString(); // Initial display
+        document.body.append(defButton);
+
+        // Set up the 'upgradeClickButton'
+        upgradeClickButton.className = 'upgrade-button'; // Use class for styling
+        upgradeClickButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
+        document.body.append(upgradeClickButton);
+
+        // Add event listeners
+        defButton.addEventListener('click', handleMainButtonClick);
+        upgradeClickButton.addEventListener('click', handleUpgradeButtonClick);
+
+        // Initial setup for visuals and display
+        updateVisuals(timesClicked); // Set initial background and font size
+        defButton.style.fontSize = FONT_SIZES.default; // Ensure default font size is set if no thresholds met
+
+        // Note: Touch event listeners are omitted as they were commented out and not explicitly required.
+        // If needed, they can be added similarly to click listeners, ensuring they call the same handler functions.
+
     </script>
+</body>
 </html>
-
-
-
-
