@@ -35,7 +35,7 @@ function wait(time) {
     return new Promise(resolve => setTimeout(resolve, time));
 }
 
-document.style.backgroundImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s";
+document.style.backgroundImage = "url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s)";
 
 //Set up the 'def button' (the button you click)
 defButton.style.width = '70%';
@@ -59,23 +59,23 @@ defButton.addEventListener('click', () => {
     numClickRng = Math.round(Math.random() * maxRng) + 1;
     timesClicked += numClickRng;
     defButton.textContent = timesClicked;
-    nice();\/*
+    nice();\
     if (timesClicked >= 1000000000) {
     defButton.style.fontSize = '8vw';
     if (timesClicked >= 1000000000) {
-        document.body.style.backgroundImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvD90oZ0SLUt9Hizd90BlaEeI4BtMrHiO1HA&s";
+        document.body.style.backgroundImage = "url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvD90oZ0SLUt9Hizd90BlaEeI4BtMrHiO1HA&s)";
         defButton.style.fontSize = '7vw';
         if (timesClicked >= 1000000000000000) {
-            document.body.style.backgroundImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s";
+            document.body.style.backgroundImage = "url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s)";
             defButton.style.fontSize = '6vw';
             defButton.style.fontSize = '5vw';
             if (timesClicked >= 1000000000000000000000n) {
-                document.body.style.backgroundImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg95X8tdImD1AZZ0dEnSCZdEx3t3iWyXwqsA&s";
+                document.body.style.backgroundImage = "url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg95X8tdImD1AZZ0dEnSCZdEx3t3iWyXwqsA&s)";
                 defButton.style.fontSize = '5vw';
                     if (timesClicked >= 1000000000000000000000000000n) {
-                    document.body.style.backgroundImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9-ANfPq_7ESF0UHnzM6s3HLaSHie6F140Q&s";
+                    document.body.style.backgroundImage = "url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9-ANfPq_7ESF0UHnzM6s3HLaSHie6F140Q&s)";
                     defButton.style.fontSize = '4vw';
-            }*/
+            }
         }
     }
 }
@@ -148,6 +148,7 @@ upgradeClickButton.addEventListener('touchstart', () => {
 */
     </script>
 </html>
+
 
 
 
