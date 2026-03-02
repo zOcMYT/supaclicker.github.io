@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supa Clicker</title>
     <style>
+        /* General body styling for a full-screen, dark, centered experience */
         body {
             background-color: black;
             background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s'); /* Default background */
@@ -13,65 +14,99 @@
             transition: background-image 0.5s ease-in-out, background-color 0.5s ease-in-out;
             margin: 0;
             overflow: hidden; /* Prevent scrollbars */
-            font-family: sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Improved font stack */
             color: white;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh; /* Ensure body takes full viewport height */
+            text-align: center; /* Center text within elements */
         }
 
+        /* Styling for the main click button */
         .main-button {
-            width: 85%;
+            width: 90%; /* Adjusted for better responsiveness */
             height: 50%;
-            font-size: 10vw;
-            background-color: purple;
+            font-size: 10vw; /* Responsive font size */
+            background-color: #8a2be2; /* Darker purple for better contrast */
             border: 1vw solid #ffffff;
-            border-radius: 1vw;
+            border-radius: 1.5vw; /* Slightly larger radius */
             color: #ffffff;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             cursor: pointer;
-            transition: filter 0.05s ease-in-out, font-size 0.3s ease-in-out; /* Smooth font size changes */
-            max-width: fit-content; /* Correctly applied */
-            box-sizing: border-box; /* Include padding and border in element's total width and height */
+            transition: filter 0.05s ease-in-out, font-size 0.3s ease-in-out, transform 0.1s ease-in-out; /* Added transform transition */
+            box-sizing: border-box;
+            display: flex; /* Use flexbox for centering text */
+            justify-content: center;
+            align-items: center;
+            padding: 1vw; /* Add padding for text */
+            max-width: 600px; /* Limit max width on very large screens */
+            max-height: 400px; /* Limit max height */
         }
 
+        /* Glowing effect for the main button */
         .main-button.glowing {
             filter: blur(10px);
+            transform: translate(-50%, -50%) scale(1.05); /* Slight scale up */
         }
 
+        /* Styling for the upgrade button */
         .upgrade-button {
-            width: 50%;
-            height: 25%;
-            font-size: 3vw;
-            background-color: rgb(54, 41, 58);
-            border: 1vw solid #ffffff;
+            width: 80%; /* Adjusted for better responsiveness */
+            height: 15%; /* Reduced height to be less intrusive */
+            font-size: 4vw; /* Responsive font size */
+            background-color: #483d8b; /* Darker, more muted color */
+            border: 0.5vw solid #ffffff; /* Thinner border */
             border-radius: 1vw;
             color: #ffffff;
             position: absolute;
-            bottom: 5%; /* Position relative to bottom */
+            bottom: 5%;
             left: 50%;
             transform: translateX(-50%);
             cursor: pointer;
-            transition: background-color 0.3s ease-in-out;
+            transition: background-color 0.3s ease-in-out, transform 0.1s ease-in-out; /* Added transform transition */
             box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1vw;
+            max-width: 400px; /* Limit max width */
+            max-height: 100px; /* Limit max height */
         }
 
-        /* Responsive adjustments */
+        /* Hover effect for buttons */
+        .main-button:hover, .upgrade-button:hover {
+            filter: brightness(1.1);
+        }
+        .main-button:active, .upgrade-button:active {
+            transform: translate(-50%, -50%) scale(0.98); /* Slight shrink on click */
+        }
+        .main-button.glowing:active {
+            transform: translate(-50%, -50%) scale(1.03); /* Adjust active for glowing */
+        }
+
+
+        /* Responsive adjustments for smaller screens */
         @media (max-width: 768px) {
             .main-button {
-                font-size: 15vw; /* Larger font on smaller screens */
-                width: 90%;
-                height: 40%;
+                font-size: 15vw;
+                width: 95%;
+                height: 45%;
+                border-radius: 2vw;
+                max-width: 95%;
+                max-height: 45%;
             }
             .upgrade-button {
-                font-size: 5vw;
-                width: 80%;
-                height: 20%;
-                bottom: 2%;
+                font-size: 6vw;
+                width: 90%;
+                height: 18%;
+                bottom: 3%;
+                border-radius: 2vw;
+                max-width: 90%;
+                max-height: 18%;
             }
         }
     </style>
@@ -80,152 +115,177 @@
 
     <script>
         // --- Constants ---
+        // URLs for background images, keyed by level.
         const BACKGROUNDS = {
-            default: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s',
+            default: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s', // Default
             level1: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvD90oZ0SLUt9Hizd90BlaEeI4BtMrHiO1HA&s', // 1 Billion
             level2: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s', // 1 Quadrillion
             level3: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg95X8tdImD1AZZ0dEnSCZdEx3t3iWyXwqsA&s', // 1 Quintillion
             level4: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9-ANfPq_7ESF0UHnzM6s3HLaSHie6F140Q&s'  // 1 Sextillion
         };
 
+        // Font sizes for different game levels.
         const FONT_SIZES = {
             default: '10vw',
-            large: '8vw',
-            larger: '7vw',
-            largest: '6vw',
-            extraLarge: '5vw',
-            extraExtraLarge: '4vw'
+            level1: '8vw',
+            level2: '7vw',
+            level3: '6vw',
+            level4: '5vw',
+            level5: '4vw'
         };
 
+        // Thresholds for changing background and font size.
+        // Uses BigInt for large number comparisons.
         const LEVEL_THRESHOLDS = [
-            { value: 1_000_000_000n, bg: BACKGROUNDS.level1, fs: FONT_SIZES.large },
-            { value: 1_000_000_000_000_000n, bg: BACKGROUNDS.level2, fs: FONT_SIZES.largest }, // Quadrillion
-            { value: 1_000_000_000_000_000_000_000n, bg: BACKGROUNDS.level3, fs: FONT_SIZES.extraLarge }, // Quintillion
-            { value: 1_000_000_000_000_000_000_000_000_000n, bg: BACKGROUNDS.level4, fs: FONT_SIZES.extraExtraLarge } // Sextillion
+            { value: 1_000_000_000n, bg: BACKGROUNDS.level1, fs: FONT_SIZES.level1 },
+            { value: 1_000_000_000_000_000n, bg: BACKGROUNDS.level2, fs: FONT_SIZES.level2 }, // Quadrillion
+            { value: 1_000_000_000_000_000_000_000n, bg: BACKGROUNDS.level3, fs: FONT_SIZES.level3 }, // Quintillion
+            { value: 1_000_000_000_000_000_000_000_000_000n, bg: BACKGROUNDS.level4, fs: FONT_SIZES.level4 }, // Sextillion
+            { value: 1_000_000_000_000_000_000_000_000_000_000_000n, bg: BACKGROUNDS.level4, fs: FONT_SIZES.level5 } // Septillion (added for more levels)
         ];
 
-        // Initial upgrade cost and click multiplier
-        let currentUpgradeCost = 250;
-        let clickMultiplier = 1; // Represents maxRng initially
-        let maxRng = 5; // Initial max random value
-
-        // Game state
-        let timesClicked = 0n; // Use BigInt for potentially very large numbers
+        // --- Game State Variables ---
+        let currentUpgradeCost = 250; // Initial cost for the first upgrade.
+        let maxRng = 5; // Initial maximum value added per click.
+        let timesClicked = 0n; // Total clicks, using BigInt for large numbers.
+        let clickSound; // Variable to hold the audio element.
 
         // --- DOM Elements ---
-        const defButton = document.createElement('button');
-        const upgradeClickButton = document.createElement('button');
-        let clickSound; // Declare clickSound outside the function
+        const mainButton = document.createElement('button'); // Renamed from defButton for clarity.
+        const upgradeButton = document.createElement('button'); // Renamed from upgradeClickButton for brevity.
 
         // --- Functions ---
 
         /**
-         * Applies a visual blur effect to the main button when a high click value is generated.
+         * Applies a visual blur and slight scale effect to the main button
+         * when a click value is significantly high relative to the current maxRng.
+         * @param {bigint} clickValue - The value of the current click.
          */
         function applyNiceEffect(clickValue) {
-            if (clickValue >= maxRng * 0.75) {
-                defButton.classList.add('glowing');
+            // Trigger effect if click value is 75% or more of the current maxRng.
+            if (clickValue >= BigInt(Math.floor(maxRng * 0.75))) {
+                mainButton.classList.add('glowing');
+                // Remove the effect after a short duration.
                 setTimeout(() => {
-                    defButton.classList.remove('glowing');
-                }, 50);
+                    mainButton.classList.remove('glowing');
+                }, 100); // Increased timeout slightly for better visibility.
             }
         }
 
         /**
-         * Updates the visual appearance of the main button based on the total clicks.
-         * Changes background image and font size for different thresholds.
+         * Updates the background image and font size of the main button
+         * based on the total number of clicks and predefined thresholds.
+         * @param {bigint} currentClicks - The current total number of clicks.
          */
         function updateVisuals(currentClicks) {
-            let applied = false;
-            // Iterate through thresholds from highest to lowest to ensure correct application
+            let thresholdApplied = false;
+            // Iterate through thresholds from highest to lowest to ensure the correct one is applied.
             for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
                 if (currentClicks >= LEVEL_THRESHOLDS[i].value) {
                     document.body.style.backgroundImage = `url('${LEVEL_THRESHOLDS[i].bg}')`;
-                    defButton.style.fontSize = LEVEL_THRESHOLDS[i].fs;
-                    applied = true;
-                    break; // Stop once the highest applicable threshold is found
+                    mainButton.style.fontSize = LEVEL_THRESHOLDS[i].fs;
+                    thresholdApplied = true;
+                    break; // Exit loop once the highest applicable threshold is found.
                 }
             }
-            // If no threshold is met, reset to default
-            if (!applied) {
+            // If no threshold is met, reset to default styles.
+            if (!thresholdApplied) {
                 document.body.style.backgroundImage = `url('${BACKGROUNDS.default}')`;
-                defButton.style.fontSize = FONT_SIZES.default;
+                mainButton.style.fontSize = FONT_SIZES.default;
             }
         }
 
         /**
          * Handles the click event on the main button.
-         * Increments click count, updates display, and triggers visual effects.
+         * Increments the click count, updates the display, applies visual effects,
+         * and plays a sound.
          */
         function handleMainButtonClick() {
-            const numClickRng = BigInt(Math.floor(Math.random() * maxRng)) + 1n; // Use BigInt for random value
-            timesClicked += numClickRng;
-            defButton.textContent = timesClicked.toLocaleString(); // Format for readability
-            applyNiceEffect(numClickRng);
-            updateVisuals(timesClicked);
-            playSound(); // Play the sound
+            // Generate a random click value between 1 and maxRng (inclusive), using BigInt.
+            const numClickRng = BigInt(Math.floor(Math.random() * maxRng)) + 1n;
+            timesClicked += numClickRng; // Add to total clicks.
+            mainButton.textContent = timesClicked.toLocaleString(); // Update button text with formatted number.
+            applyNiceEffect(numClickRng); // Apply visual effect if conditions met.
+            updateVisuals(timesClicked); // Update background and font size based on total clicks.
+            playSound(); // Play click sound.
         }
 
         /**
          * Handles the click event on the upgrade button.
-         * Upgrades click value if enough points are available.
+         * Decreases click count by upgrade cost, increases click multiplier (maxRng),
+         * and updates the upgrade cost.
          */
         function handleUpgradeButtonClick() {
+            // Check if the player has enough clicks to afford the upgrade.
             if (timesClicked >= BigInt(currentUpgradeCost)) {
-                timesClicked -= BigInt(currentUpgradeCost);
-                currentUpgradeCost = Math.floor(currentUpgradeCost * 2.9); // Upgrade cost increases
-                maxRng = Math.floor(maxRng * 3); // Click value multiplier increases
-                
-                // Update button text and display
-                defButton.textContent = timesClicked.toLocaleString();
-                upgradeClickButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
-                
-                // Re-apply visuals in case thresholds were met/unmet by spending
+                timesClicked -= BigInt(currentUpgradeCost); // Deduct cost.
+                currentUpgradeCost = Math.floor(currentUpgradeCost * 2.9); // Increase upgrade cost for next level.
+                maxRng = Math.floor(maxRng * 3); // Increase the maximum value per click.
+
+                // Update button text and display.
+                mainButton.textContent = timesClicked.toLocaleString();
+                upgradeButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
+
+                // Re-apply visuals in case spending points changed the level.
                 updateVisuals(timesClicked);
             }
         }
 
+        /**
+         * Plays the click sound effect. Resets playback to the beginning if already playing.
+         */
         function playSound() {
-            clickSound.currentTime = 0; // Reset sound to start
-            clickSound.play();
+            if (clickSound) {
+                clickSound.currentTime = 0; // Rewind sound to the start.
+                clickSound.play().catch(error => {
+                    // Handle potential errors, e.g., if user interaction is required to start audio.
+                    console.warn("Audio playback failed:", error);
+                });
+            }
+        }
+
+        /**
+         * Initializes the audio element with the specified URL.
+         */
+        function initializeAudio() {
+            // Using a direct URL for the audio file.
+            const audioURL = "https://github.com/zOcMYT/supaclicker.github.io/blob/main/Mouseclick.wav?raw=true"; // Added ?raw=true for direct download.
+            clickSound = new Audio(audioURL);
+            clickSound.preload = 'auto'; // Preload audio for better performance.
+            // Note: Autoplay policies might prevent immediate playback without user interaction.
         }
 
         // --- Initialization ---
 
-        // Function to set the audio URL
-        function setAudioURL() {
-            // Use the provided URL directly
-            const audioURL = "https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/Mouseclick.wav";
-            
-            // Create audio element
-            clickSound = new Audio(audioURL);
-            clickSound.preload = 'auto';
+        // Set up the main button.
+        mainButton.className = 'main-button'; // Assign CSS class for styling.
+        mainButton.textContent = timesClicked.toLocaleString(); // Set initial display text.
+        document.body.append(mainButton); // Add button to the document body.
+
+        // Set up the upgrade button.
+        upgradeButton.className = 'upgrade-button'; // Assign CSS class for styling.
+        upgradeButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`; // Set initial text.
+        document.body.append(upgradeButton); // Add button to the document body.
+
+        // Add event listeners to buttons.
+        mainButton.addEventListener('click', handleMainButtonClick);
+        upgradeButton.addEventListener('click', handleUpgradeButtonClick);
+
+        // Initial setup for visuals and display.
+        updateVisuals(timesClicked); // Set initial background and font size based on 0 clicks.
+        // Ensure default font size is explicitly set if no thresholds are met initially.
+        if (document.body.style.backgroundImage === '') {
+             document.body.style.backgroundImage = `url('${BACKGROUNDS.default}')`;
         }
+        mainButton.style.fontSize = FONT_SIZES.default;
 
-        // Set up the 'def button' (the button you click)
-        defButton.className = 'main-button'; // Use class for styling
-        defButton.textContent = timesClicked.toLocaleString(); // Initial display
-        document.body.append(defButton);
 
-        // Set up the 'upgradeClickButton'
-        upgradeClickButton.className = 'upgrade-button'; // Use class for styling
-        upgradeClickButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
-        document.body.append(upgradeClickButton);
+        // Load and prepare audio.
+        initializeAudio();
 
-        // Add event listeners
-        defButton.addEventListener('click', handleMainButtonClick);
-        upgradeClickButton.addEventListener('click', handleUpgradeButtonClick);
-
-        // Initial setup for visuals and display
-        updateVisuals(timesClicked); // Set initial background and font size
-        defButton.style.fontSize = FONT_SIZES.default; // Ensure default font size is set if no thresholds met
-
-        // Load Audio
-        setAudioURL();
-        // Note: Touch event listeners are omitted as they were commented out and not explicitly required.
+        // Note: Touch event listeners were omitted as they were commented out in the original.
         // If needed, they can be added similarly to click listeners, ensuring they call the same handler functions.
-
+        // Example: mainButton.addEventListener('touchstart', handleMainButtonClick);
     </script>
 </body>
 </html>
-
