@@ -75,28 +75,41 @@
             }
         }
 
-        /* Styles for the leaderboard */
-        #leaderboardContainer {
+        #dailyRewardContainer {
             position: absolute;
             top: 10px;
-            right: 10px;
+            left: 10px;
             background-color: rgba(0, 0, 0, 0.5);
             color: white;
             padding: 10px;
             border-radius: 5px;
-            font-size: 1.5vw;
         }
 
-        #highScoreDisplay {
-            font-weight: bold;
+        #rewardTimer {
+            font-size: 1.2em;
+        }
+
+        #claimButton {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        #claimButton:disabled {
+            background-color: gray;
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
-    <!-- Leaderboard Display -->
-    <div id="leaderboardContainer">
-        <h2>Leaderboard</h2>
-        <div>High Score: <span id="highScoreDisplay">0</span></div>
+
+    <div id="dailyRewardContainer">
+        <div id="rewardTimer"></div>
+        <button id="claimButton">Claim Daily Reward (1.5x)</button>
     </div>
 
     <script>
@@ -138,8 +151,13 @@
         const upgradeClickButton = document.createElement('button');
         let clickSound; // Declare clickSound outside the function
 
-        // Leaderboard Element
-        const highScoreDisplay = document.getElementById('highScoreDisplay');
+        // Daily Reward Elements
+        const claimButton = document.getElementById('claimButton');
+        const rewardTimer = document.getElementById('rewardTimer');
+
+        const rewardMultiplier = 1.5;
+        const rewardCooldown = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        let lastClaimTime = localStorage.getItem('lastClaimTime') || 0;
 
         // --- Functions ---
 
@@ -188,7 +206,6 @@
             applyNiceEffect(numClickRng);
             updateVisuals(timesClicked);
             playSound(); // Play the sound
-            updateHighScore(timesClicked); // Update high score after each click
         }
 
         /**
@@ -215,28 +232,33 @@
             clickSound.play();
         }
 
-        // Leaderboard Functions
+        // Daily Reward Functionality
 
-        /**
-         * Updates the high score in localStorage if the current score is higher.
-         * @param {BigInt} currentScore - The current score to compare with the high score.
-         */
-        function updateHighScore(currentScore) {
-            let highScore = localStorage.getItem('highScore') || 0; // Retrieve high score
-            highScore = BigInt(highScore); // Convert to BigInt for comparison
+        function updateRewardTimer() {
+            const now = Date.now();
+            const timeSinceLastClaim = now - lastClaimTime;
 
-            if (currentScore > highScore) {
-                localStorage.setItem('highScore', currentScore.toString()); // Store new high score
-                highScoreDisplay.textContent = currentScore.toLocaleString(); // Update display
+            if (timeSinceLastClaim >= rewardCooldown) {
+                rewardTimer.textContent = "Reward Ready!";
+                claimButton.disabled = false;
+            } else {
+                const timeLeft = rewardCooldown - timeSinceLastClaim;
+                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                rewardTimer.textContent = `Time until reward: ${hours}h ${minutes}m ${seconds}s`;
+                claimButton.disabled = true;
             }
         }
 
-        /**
-         * Displays the high score from localStorage on page load.
-         */
-        function displayHighScore() {
-            let highScore = localStorage.getItem('highScore') || 0; // Retrieve high score
-            highScoreDisplay.textContent = BigInt(highScore).toLocaleString(); // Display high score
+        function claimDailyReward() {
+            timesClicked = BigInt(Math.floor(Number(timesClicked) * rewardMultiplier));
+            defButton.textContent = timesClicked.toLocaleString();
+            lastClaimTime = Date.now();
+            localStorage.setItem('lastClaimTime', lastClaimTime);
+            updateVisuals(timesClicked);
+            updateRewardTimer();
         }
 
         // --- Initialization ---
@@ -264,6 +286,7 @@
         // Add event listeners
         defButton.addEventListener('click', handleMainButtonClick);
         upgradeClickButton.addEventListener('click', handleUpgradeButtonClick);
+        claimButton.addEventListener('click', claimDailyReward);
 
         // Initial setup for visuals and display
         updateVisuals(timesClicked); // Set initial background and font size
@@ -274,8 +297,11 @@
         // Note: Touch event listeners are omitted as they were commented out and not explicitly required.
         // If needed, they can be added similarly to click listeners, ensuring they call the same handler functions.
 
-        // Leaderboard Initialization
-        displayHighScore(); // Display high score on page load
+        // Daily Reward Initialization
+        lastClaimTime = localStorage.getItem('lastClaimTime') || 0;
+        updateRewardTimer();
+        setInterval(updateRewardTimer, 1000); // Update every second
+
     </script>
 </body>
 </html>
