@@ -139,12 +139,12 @@
         ];
 
         // Initial upgrade cost and click multiplier
-        let currentUpgradeCost = 250;
-        let clickMultiplier = 1; // Represents maxRng initially
-        let maxRng = 5; // Initial max random value
+        let currentUpgradeCost = parseInt(localStorage.getItem('upgradeCost')) || 250;
+        let clickMultiplier = parseInt(localStorage.getItem('clickMultiplier')) || 1; // Represents maxRng initially
+        let maxRng = parseInt(localStorage.getItem('maxRng')) || 5; // Initial max random value
 
         // Game state
-        let timesClicked = 0n; // Use BigInt for potentially very large numbers
+        let timesClicked = BigInt(localStorage.getItem('timesClicked') || 0); // Use BigInt for potentially very large numbers
 
         // --- DOM Elements ---
         const defButton = document.createElement('button');
@@ -206,6 +206,7 @@
             applyNiceEffect(numClickRng);
             updateVisuals(timesClicked);
             playSound(); // Play the sound
+			saveGame();
         }
 
         /**
@@ -224,8 +225,16 @@
                 
                 // Re-apply visuals in case thresholds were met/unmet by spending
                 updateVisuals(timesClicked);
+				saveGame();
             }
         }
+
+		function saveGame() {
+			localStorage.setItem('timesClicked', timesClicked.toString());
+			localStorage.setItem('upgradeCost', currentUpgradeCost);
+			localStorage.setItem('maxRng', maxRng);
+			localStorage.setItem('clickMultiplier', clickMultiplier);
+		}
 
         function playSound() {
             clickSound.currentTime = 0; // Reset sound to start
@@ -259,6 +268,7 @@
             localStorage.setItem('lastClaimTime', lastClaimTime);
             updateVisuals(timesClicked);
             updateRewardTimer();
+			saveGame();
         }
 
         // --- Initialization ---
