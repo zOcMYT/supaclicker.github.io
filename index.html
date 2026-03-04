@@ -9,34 +9,34 @@
     <style>
         body {
             background-color: black;
-            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhKwQIRUwpbMpXJHn18sC8ovXBGirUpQ&s'); / Default background /
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhKwQIRUwpbMpXJHn18sC8ovXBGirUpQ&s'); /* Default background */
             background-size: cover;
             background-position: center;
             transition: background-image 0.5s ease-in-out, background-color 0.5s ease-in-out;
             margin: 0;
-            overflow: hidden; / Prevent scrollbars /
-            font-family: 'Marker Felt', fantasy; / Added quotes for font name /
+            overflow: hidden; /* Prevent scrollbars */
+            font-family: 'Marker Felt', fantasy; /* Added quotes for font name */
             color: white;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh; / Ensure body takes full viewport height /
+            min-height: 100vh; /* Ensure body takes full viewport height */
         }
 
         .main-button {
-            / Removed fixed width and height /
-            height: 50%; / Keeping height for now, but this might also need adjustment /
+            /* Removed fixed width and height */
+            height: 50%; /* Keeping height for now, but this might also need adjustment */
             font-size: 5vw;
             border: 1vw solid ffffff;
             border-radius: 1vw;
             cursor: pointer;
-            transition: filter 0.05s ease-in-out, font-size 0.3s ease-in-out; / Smooth font size changes /
-            box-sizing: border-box; / Include padding and border in element's total width and height /
-            position: relative; / Needed for absolute positioning of pseudo-elements if used, or for general layout /
-            overflow: hidden; / Ensures the gradient stays within the button bounds /
-            padding: 1vw 2vw; / Added padding to give text some breathing room /
-            white-space: nowrap; / Prevent text from wrapping /
-            display: inline-block; / Allow width to be determined by content /
+            transition: filter 0.05s ease-in-out, font-size 0.3s ease-in-out; /* Smooth font size changes */
+            box-sizing: border-box; /* Include padding and border in element's total width and height */
+            position: relative; /* Needed for absolute positioning of pseudo-elements if used, or for general layout */
+            overflow: hidden; /* Ensures the gradient stays within the button bounds */
+            padding: 1vw 2vw; /* Added padding to give text some breathing room */
+            white-space: nowrap; /* Prevent text from wrapping */
+            display: inline-block; /* Allow width to be determined by content */
         }
 
         .main-button.glowing {
@@ -44,36 +44,36 @@
         }
 
         .upgrade-button {
-            / Removed fixed width /
-            height: 25%; / Keeping height for now /
+            /* Removed fixed width */
+            height: 25%; /* Keeping height for now */
             font-size: 1vw;
             background-color: rgb(54, 41, 58);
             border: 1vw solid ffffff;
             border-radius: 1vw;
             color: ffffff;
             position: absolute;
-            bottom: 5%; / Position relative to bottom /
+            bottom: 5%; /* Position relative to bottom */
             left: 50%;
             transform: translateX(-50%);
             cursor: pointer;
             transition: background-color 0.3s ease-in-out;
             box-sizing: border-box;
-            padding: 1vw 2vw; / Added padding /
-            white-space: nowrap; / Prevent text from wrapping /
-            display: inline-block; / Allow width to be determined by content /
+            padding: 1vw 2vw; /* Added padding */
+            white-space: nowrap; /* Prevent text from wrapping */
+            display: inline-block; /* Allow width to be determined by content */
         }
 
-        / Responsive adjustments /
+        /* Responsive adjustments */
         @media (max-width: 768px) {
             .main-button {
-                font-size: 3vw; / Larger font on smaller screens /
+                font-size: 3vw; /* Larger font on smaller screens */
                 height: 40%;
-                / width is now dynamic /
+                /* width is now dynamic */
             }
             .upgrade-button {
                 font-size: 1vw;
                 height: 20%;
-                / width is now dynamic /
+                /* width is now dynamic */
             }
         }
 
@@ -85,12 +85,12 @@
             color: white;
             padding: 10px;
             border-radius: 5px;
-            z-index: 10; / Ensure it's above other elements /
+            z-index: 10; /* Ensure it's above other elements */
         }
 
         rewardTimer {
             font-size: 1.2em;
-            margin-bottom: 5px; / Add some spacing /
+            margin-bottom: 5px; /* Add some spacing */
         }
 
         claimButton {
@@ -130,7 +130,7 @@
 
         .rainbow-strobe {
             background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
-            background-size: 400% 400%; / Increased size for smoother transition /
+            background-size: 400% 400%; /* Increased size for smoother transition */
             animation: rainbow 1.5s linear infinite;
         }
 
@@ -138,10 +138,10 @@
             0% {
                 background-position: 0% 50%;
             }
-            50% { / Added a midpoint to ensure the full spectrum is covered /
+            50% { /* Added a midpoint to ensure the full spectrum is covered */
                 background-position: 100% 50%;
             }
-            100% { / Resetting to 0% for a seamless loop /
+            100% { /* Resetting to 0% for a seamless loop */
                 background-position: 0% 50%;
             }
         }
@@ -200,7 +200,7 @@
         const rewardTimer = document.getElementById('rewardTimer');
 
         const REWARDMULTIPLIER = 1.5;
-        const REWARDCOOLDOWNMS = 24  60  60  1000; // 24 hours in milliseconds
+        const REWARDCOOLDOWNMS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
         let lastClaimTime = localStorage.getItem('lastClaimTime') ? parseInt(localStorage.getItem('lastClaimTime'), 10) : 0;
 
         // Reset Button Element
@@ -208,13 +208,13 @@
 
         // --- Functions ---
 
-        /
-          Applies a visual blur effect to the main button when a high click value is generated.
-          @param {bigint} clickValue - The value of the current click.
-         /
+        /**
+         * Applies a visual blur effect to the main button when a high click value is generated.
+         * @param {bigint} clickValue - The value of the current click.
+         */
         function applyNiceEffect(clickValue) {
             // Ensure comparison is done with BigInts
-            if (clickValue >= BigInt(Math.floor(Number(maxClicksPerRandom)  0.75))) {
+            if (clickValue >= BigInt(Math.floor(Number(maxClicksPerRandom) * 0.75))) {
                 mainButton.classList.add('glowing');
                 setTimeout(() => {
                     mainButton.classList.remove('glowing');
@@ -222,17 +222,17 @@
             }
         }
 
-        /
-          Updates the visual appearance of the main button and body based on the total clicks.
-          Changes background image and font size for different thresholds.
-          @param {bigint} currentClicks - The current total number of clicks.
-         /
+        /**
+         * Updates the visual appearance of the main button and body based on the total clicks.
+         * Changes background image and font size for different thresholds.
+         * @param {bigint} currentClicks - The current total number of clicks.
+         */
         function updateVisuals(currentClicks) {
             let appliedThreshold = false;
             // Iterate through thresholds from highest to lowest to ensure correct application
             for (let i = LEVELTHRESHOLDS.length - 1; i >= 0; i--) {
                 if (currentClicks >= LEVELTHRESHOLDS[i].value) {
-                    document.body.style.backgroundImage = url('${LEVELTHRESHOLDS[i].bg}');
+                    document.body.style.backgroundImage = `url('${LEVELTHRESHOLDS[i].bg}')`;
                     mainButton.style.fontSize = LEVELTHRESHOLDS[i].fs;
                     appliedThreshold = true;
                     break; // Stop once the highest applicable threshold is found
@@ -240,18 +240,18 @@
             }
             // If no threshold is met, reset to default
             if (!appliedThreshold) {
-                document.body.style.backgroundImage = url('${BACKGROUNDS.default}');
+                document.body.style.backgroundImage = `url('${BACKGROUNDS.default}')`;
                 mainButton.style.fontSize = FONTSIZES.default;
             }
         }
 
-        /
-          Handles the click event on the main button.
-          Increments click count, updates display, triggers visual effects, and plays sound.
-         /
+        /**
+         * Handles the click event on the main button.
+         * Increments click count, updates display, triggers visual effects, and plays sound.
+         */
         function handleMainButtonClick() {
             // Generate a random click value within the current range (1 to maxClicksPerRandom)
-            const numClickRng = BigInt(Math.floor(Math.random()  Number(maxClicksPerRandom))) + 1n;
+            const numClickRng = BigInt(Math.floor(Math.random() * Number(maxClicksPerRandom))) + 1n;
             timesClicked += numClickRng;
 
             mainButton.textContent = timesClicked.toLocaleString(); // Format for readability
@@ -263,29 +263,29 @@
             mainButton.classList.add('rainbow-strobe');
         }
 
-        /
-          Handles the click event on the upgrade button.
-          Upgrades click value if enough points are available.
-         /
+        /**
+         * Handles the click event on the upgrade button.
+         * Upgrades click value if enough points are available.
+         */
         function handleUpgradeButtonClick() {
             if (timesClicked >= currentUpgradeCost) {
                 timesClicked -= currentUpgradeCost;
                 // Increase upgrade cost and click value multiplier, ensuring BigInt arithmetic
-                currentUpgradeCost = BigInt(Math.floor(Number(currentUpgradeCost)  2.9));
-                maxClicksPerRandom = BigInt(Math.floor(Number(maxClicksPerRandom)  3));
+                currentUpgradeCost = BigInt(Math.floor(Number(currentUpgradeCost) * 2.9));
+                maxClicksPerRandom = BigInt(Math.floor(Number(maxClicksPerRandom) * 3));
 
                 // Update button text and display
                 mainButton.textContent = timesClicked.toLocaleString();
-                upgradeClickButton.textContent = Upgrade Click Value (${currentUpgradeCost.toLocaleString()});
+                upgradeClickButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
 
                 // Re-apply visuals in case spending points changed thresholds
                 updateVisuals(timesClicked);
             }
         }
 
-        /
-          Plays the click sound effect.
-         /
+        /**
+         * Plays the click sound effect.
+         */
         function playSound() {
             if (clickSound) {
                 clickSound.currentTime = 0; // Reset sound to start
@@ -298,9 +298,9 @@
 
         // --- Daily Reward Functionality ---
 
-        /
-          Updates the daily reward timer display and button state.
-         /
+        /**
+         * Updates the daily reward timer display and button state.
+         */
         function updateRewardTimer() {
             const now = Date.now();
             const timeSinceLastClaim = now - lastClaimTime;
@@ -310,22 +310,22 @@
                 claimButton.disabled = false;
             } else {
                 const timeLeft = REWARDCOOLDOWNMS - timeSinceLastClaim;
-                const hours = Math.floor(timeLeft / (1000  60  60));
-                const minutes = Math.floor((timeLeft % (1000  60  60)) / (1000  60));
-                const seconds = Math.floor((timeLeft % (1000  60)) / 1000);
+                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
-                rewardTimer.textContent = Time until reward: ${hours}h ${minutes}m ${seconds}s;
+                rewardTimer.textContent = `Time until reward: ${hours}h ${minutes}m ${seconds}s`;
                 claimButton.disabled = true;
             }
         }
 
-        /
-          Claims the daily reward, applying the multiplier to the current clicks.
-         /
+        /**
+         * Claims the daily reward, applying the multiplier to the current clicks.
+         */
         function claimDailyReward() {
             // Apply multiplier using BigInt arithmetic to avoid precision loss
-            // (timesClicked  1.5) is approximated by (timesClicked  1500) / 1000
-            timesClicked = (timesClicked  BigInt(Math.floor(REWARDMULTIPLIER  1500))) / BigInt(1500);
+            // (timesClicked * 1.5) is approximated by (timesClicked * 1500) / 1000
+            timesClicked = (timesClicked * BigInt(Math.floor(REWARDMULTIPLIER * 1500))) / BigInt(1500);
 
             mainButton.textContent = timesClicked.toLocaleString();
             lastClaimTime = Date.now();
@@ -334,9 +334,9 @@
             updateRewardTimer();
         }
 
-        /
-          Initializes the audio element with the specified URL.
-         /
+        /**
+         * Initializes the audio element with the specified URL.
+         */
         function initializeAudio() {
             const audioURL = "https://github.com/zOcMYT/supaclicker.github.io/raw/main/Mouseclick.wav"; // Use raw URL
             clickSound = new Audio(audioURL);
@@ -348,9 +348,9 @@
             };
         }
 
-        /
-          Resets the game state to its initial values.
-         /
+        /**
+         * Resets the game state to its initial values.
+         */
         function resetGame() {
             // Reset game state variables
             timesClicked = 0n;
@@ -359,10 +359,10 @@
 
             // Update display elements
             mainButton.textContent = timesClicked.toLocaleString();
-            upgradeClickButton.textContent = Upgrade Click Value (${currentUpgradeCost.toLocaleString()});
+            upgradeClickButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
 
             // Reset visuals to default
-            document.body.style.backgroundImage = url('${BACKGROUNDS.default}');
+            document.body.style.backgroundImage = `url('${BACKGROUNDS.default}')`;
             mainButton.style.fontSize = FONTSIZES.default;
 
             // Reset local storage (optional, but recommended)
@@ -385,7 +385,7 @@
 
         // Set up the upgrade button
         upgradeClickButton.className = 'upgrade-button'; // Use class for styling
-        upgradeClickButton.textContent = Upgrade Click Value (${currentUpgradeCost.toLocaleString()});
+        upgradeClickButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
         document.body.append(upgradeClickButton);
 
         // Add event listeners
@@ -398,7 +398,7 @@
         updateVisuals(timesClicked); // Set initial background and font size based on 0 clicks
         // Ensure default font size is explicitly set if no thresholds met
         if (document.body.style.backgroundImage === '') {
-             document.body.style.backgroundImage = url('${BACKGROUNDS.default}');
+             document.body.style.backgroundImage = `url('${BACKGROUNDS.default}')`;
         }
         if (mainButton.style.fontSize === '') {
             mainButton.style.fontSize = FONTSIZES.default;
