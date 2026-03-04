@@ -15,7 +15,7 @@
             transition: background-image 0.5s ease-in-out, background-color 0.5s ease-in-out;
             margin: 0;
             overflow: hidden; /* Prevent scrollbars */
-            font-family: 'Marker Felt', fantasy; /* Corrected: Font name in quotes */
+            font-family: 'Marker Felt', fantasy; /* Added quotes for font name */
             color: white;
             display: flex;
             justify-content: center;
@@ -187,9 +187,8 @@
         let timesClicked = 0n;         // Use BigInt for potentially very large numbers
 
         // --- DOM Elements ---
-        // Defined in HTML for better structure and easier selection.
-        const mainButton = document.getElementById('mainButton');
-        const upgradeClickButton = document.getElementById('upgradeButton');
+        const mainButton = document.createElement('button'); // Renamed from defButton for clarity
+        const upgradeClickButton = document.createElement('button');
         let clickSound; // Declare clickSound outside the function
 
         // Daily Reward Elements
@@ -198,8 +197,7 @@
 
         const REWARD_MULTIPLIER = 1.5;
         const REWARD_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-        // Initialize lastClaimTime, ensuring it's a number or 0
-        let lastClaimTime = parseInt(localStorage.getItem('lastClaimTime') || '0', 10);
+        let lastClaimTime = localStorage.getItem('lastClaimTime') ? parseInt(localStorage.getItem('lastClaimTime'), 10) : 0;
 
         // Reset Button Element
         const resetButton = document.getElementById('resetButton');
@@ -211,10 +209,8 @@
          * @param {bigint} clickValue - The value of the current click.
          */
         function applyNiceEffect(clickValue) {
-            // Use BigInt arithmetic for comparison to avoid precision loss
-            // 0.75 is represented as 750n/1000n
-            const threshold = (maxClicksPerRandom * 750n) / 1000n;
-            if (clickValue >= threshold) {
+            // Ensure comparison is done with BigInts
+            if (clickValue >= BigInt(Math.floor(Number(maxClicksPerRandom) * 0.75))) {
                 mainButton.classList.add('glowing');
                 setTimeout(() => {
                     mainButton.classList.remove('glowing');
@@ -251,15 +247,7 @@
          */
         function handleMainButtonClick() {
             // Generate a random click value within the current range (1 to maxClicksPerRandom)
-            // Math.random() returns a Number. Convert maxClicksPerRandom to Number for this.
-            // Ensure maxClicksPerRandom is not excessively large to avoid precision issues.
-            const maxClicksAsNumber = Number(maxClicksPerRandom);
-            if (maxClicksAsNumber > Number.MAX_SAFE_INTEGER) {
-                console.warn("maxClicksPerRandom exceeds MAX_SAFE_INTEGER, random generation might be imprecise.");
-                // For extremely large numbers, a custom BigInt random generator would be needed.
-            }
-            const numClickRng = BigInt(Math.floor(Math.random() * maxClicksAsNumber)) + 1n;
-            
+            const numClickRng = BigInt(Math.floor(Math.random() * Number(maxClicksPerRandom))) + 1n;
             timesClicked += numClickRng;
 
             mainButton.textContent = timesClicked.toLocaleString(); // Format for readability
@@ -278,11 +266,9 @@
         function handleUpgradeButtonClick() {
             if (timesClicked >= currentUpgradeCost) {
                 timesClicked -= currentUpgradeCost;
-                // Increase upgrade cost and click value multiplier, using BigInt arithmetic
-                // 2.9 multiplier: (cost * 29n) / 10n
-                currentUpgradeCost = (currentUpgradeCost * 29n) / 10n;
-                // 3x multiplier: cost * 3n
-                maxClicksPerRandom = maxClicksPerRandom * 3n;
+                // Increase upgrade cost and click value multiplier, ensuring BigInt arithmetic
+                currentUpgradeCost = BigInt(Math.floor(Number(currentUpgradeCost) * 2.9));
+                maxClicksPerRandom = BigInt(Math.floor(Number(maxClicksPerRandom) * 3));
 
                 // Update button text and display
                 mainButton.textContent = timesClicked.toLocaleString();
@@ -334,8 +320,8 @@
          */
         function claimDailyReward() {
             // Apply multiplier using BigInt arithmetic to avoid precision loss
-            // Correctly applies 1.5x multiplier: (timesClicked * 3n) / 2n
-            timesClicked = (timesClicked * 3n) / 2n;
+            // (timesClicked * 1.5) is approximated by (timesClicked * 1500) / 1000
+            timesClicked = (timesClicked * BigInt(Math.floor(REWARD_MULTIPLIER * 1500))) / BigInt(1500);
 
             mainButton.textContent = timesClicked.toLocaleString();
             lastClaimTime = Date.now();
@@ -372,29 +358,28 @@
             upgradeClickButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
 
             // Reset visuals to default
-            updateVisuals(timesClicked); // This will set default background and font size
+            document.body.style.backgroundImage = `url('${BACKGROUNDS.default}')`;
+            mainButton.style.fontSize = FONT_SIZES.default;
 
-            // Reset local storage
+            // Reset local storage (optional, but recommended)
             localStorage.removeItem('lastClaimTime');
-            lastClaimTime = 0; // Reset in-memory variable
-            updateRewardTimer(); // Update timer display immediately
+            lastClaimTime = 0;
+            updateRewardTimer();
 
             // Any other game state that needs to be reset
         }
 
         // --- Initialization ---
 
-        // Set up the main click button (assuming it's now in HTML)
-        // If dynamically created, ensure class and text are set before appending.
-        // For this optimized version, we assume HTML definition.
-        // mainButton.className = 'main-button'; // Use class for styling
-        // mainButton.textContent = timesClicked.toLocaleString(); // Initial display
-        // document.body.append(mainButton); // Removed if defined in HTML
+        // Set up the main click button
+        mainButton.className = 'main-button'; // Use class for styling
+        mainButton.textContent = timesClicked.toLocaleString(); // Initial display
+        document.body.append(mainButton);
 
-        // Set up the upgrade button (assuming it's now in HTML)
-        // upgradeClickButton.className = 'upgrade-button'; // Use class for styling
-        // upgradeClickButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
-        // document.body.append(upgradeClickButton); // Removed if defined in HTML
+        // Set up the upgrade button
+        upgradeClickButton.className = 'upgrade-button'; // Use class for styling
+        upgradeClickButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
+        document.body.append(upgradeClickButton);
 
         // Add event listeners
         mainButton.addEventListener('click', handleMainButtonClick);
@@ -404,11 +389,21 @@
 
         // Initial setup for visuals and display
         updateVisuals(timesClicked); // Set initial background and font size based on 0 clicks
+        // Ensure default font size is explicitly set if no thresholds met
+        if (document.body.style.backgroundImage === '') {
+             document.body.style.backgroundImage = `url('${BACKGROUNDS.default}')`;
+        }
+        if (mainButton.style.fontSize === '') {
+            mainButton.style.fontSize = FONT_SIZES.default;
+        }
+
 
         // Load Audio
         initializeAudio();
 
         // Daily Reward Initialization
+        // Ensure lastClaimTime is a number for calculations
+        lastClaimTime = localStorage.getItem('lastClaimTime') ? parseInt(localStorage.getItem('lastClaimTime'), 10) : 0;
         updateRewardTimer();
         setInterval(updateRewardTimer, 1000); // Update timer every second
 
