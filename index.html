@@ -29,7 +29,10 @@
             font-size: 5vw;
             border: 1vw solid #ffffff;
             border-radius: 1vw;
-            color: #ffffff;
+            .rainbow-strobe {
+            background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+            background-size: 400% 400%;
+            animation: rainbow 1.5s linear infinite;
             position: absolute;
             top: 50%;
             left: 50%;
@@ -414,4 +417,5 @@
     </script>
 </body>
 </html>
+
 
