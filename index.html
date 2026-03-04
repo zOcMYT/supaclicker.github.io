@@ -24,8 +24,8 @@
         }
 
         .main-button {
-            width: 85%;
-            height: 50%;
+            / Removed fixed width and height /
+            height: 50%; / Keeping height for now, but this might also need adjustment /
             font-size: 5vw;
             border: 1vw solid ffffff;
             border-radius: 1vw;
@@ -34,6 +34,9 @@
             box-sizing: border-box; / Include padding and border in element's total width and height /
             position: relative; / Needed for absolute positioning of pseudo-elements if used, or for general layout /
             overflow: hidden; / Ensures the gradient stays within the button bounds /
+            padding: 1vw 2vw; / Added padding to give text some breathing room /
+            white-space: nowrap; / Prevent text from wrapping /
+            display: inline-block; / Allow width to be determined by content /
         }
 
         .main-button.glowing {
@@ -41,8 +44,8 @@
         }
 
         .upgrade-button {
-            width: 50%;
-            height: 25%;
+            / Removed fixed width /
+            height: 25%; / Keeping height for now /
             font-size: 1vw;
             background-color: rgb(54, 41, 58);
             border: 1vw solid ffffff;
@@ -55,20 +58,22 @@
             cursor: pointer;
             transition: background-color 0.3s ease-in-out;
             box-sizing: border-box;
+            padding: 1vw 2vw; / Added padding /
+            white-space: nowrap; / Prevent text from wrapping /
+            display: inline-block; / Allow width to be determined by content /
         }
 
         / Responsive adjustments /
         @media (max-width: 768px) {
             .main-button {
                 font-size: 3vw; / Larger font on smaller screens /
-                width: 90%;
                 height: 40%;
+                / width is now dynamic /
             }
             .upgrade-button {
                 font-size: 1vw;
-                width: 80%;
                 height: 20%;
-                bottom: 2%;
+                / width is now dynamic /
             }
         }
 
