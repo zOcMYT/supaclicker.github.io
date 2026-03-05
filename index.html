@@ -2,153 +2,242 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supa Clicker - OVERLOAD EDITION</title>
+    <link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnWiLCu4SMSywY0Jl2JUhSY2JpBW7fpenB5w&s">
+
     <style>
         body {
-            background-color: #1a1a1a;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            background-color: black;
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s');
+            background-size: cover;
+            background-position: center;
+            transition: background-image 0.5s ease-in-out, background-color 0.5s ease-in-out;
             margin: 0;
             overflow: hidden;
-        }
-
-        #score-container {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px #00ff00;
-        }
-
-        #main-button {
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            border: 8px solid #00ff00;
-            background: radial-gradient(circle, #333, #000);
-            color: #00ff00;
-            font-size: 2rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.1s, box-shadow 0.1s;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
-        }
-
-        #main-button:active {
-            transform: scale(0.95);
-            box-shadow: 0 0 40px rgba(0, 255, 0, 0.5);
-        }
-
-        .stats {
-            margin-top: 20px;
-            font-size: 1.2rem;
-        }
-
-        /* The Crash Button */
-        #crash-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: #ff0000;
+            font-family: 'Marker Felt', fantasy;
             color: white;
-            border: 4px solid #ffffff;
-            padding: 15px 30px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            z-index: 1000;
-            animation: pulse 1s infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(255, 0, 0, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+        .main-button {
+            width: 85%;
+            height: 50%;
+            font-size: 5vw;
+            border: 1vw solid #ffffff;
+            border-radius: 1vw;
+            color: #ffffff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            transition: filter 0.05s ease-in-out, font-size 0.3s ease-in-out;
+            box-sizing: border-box;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .main-button.glowing { filter: blur(10px); }
+
+        .upgrade-button {
+            width: 50%;
+            height: 25%;
+            font-size: 1vw;
+            background-color: rgb(54, 41, 58);
+            border: 1vw solid #ffffff;
+            border-radius: 1vw;
+            color: #ffffff;
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        #dailyRewardContainer {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 10;
+        }
+
+        #resetButtonContainer {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+        }
+
+        #resetButton {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .rainbow-strobe {
+            background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+            background-size: 400% 400%;
+            animation: rainbow 1.5s linear infinite;
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
     </style>
 </head>
 <body>
 
-    <button id="crash-btn">SYSTEM OVERLOAD</button>
+    <div id="dailyRewardContainer">
+        <div id="rewardTimer"></div>
+        <button id="claimButton">Claim Daily Reward (1.5x)</button>
+    </div>
 
-    <div id="score-container">0</div>
-    
-    <button id="main-button">CLICK ME</button>
-
-    <div class="stats">
-        CPS: <span id="cps-display">0</span>
+    <div id="resetButtonContainer">
+        <button id="resetButton">Reset Game</button>
     </div>
 
     <script>
-        let timesClicked = 0n;
-        let cps = 0n;
+        const BACKGROUNDS = {
+            default: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s',
+            level1: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvD90oZ0SLUt9Hizd90BlaEeI4BtMrHiO1HA&s',
+            level2: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s',
+            level3: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg95X8tdImD1AZZ0dEnSCZdEx3t3iWyXwqsA&s',
+            level4: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9-ANfPq_7ESF0UHnzM6s3HLaSHie6F140Q&s'
+        };
 
-        const scoreDisplay = document.getElementById('score-container');
-        const mainButton = document.getElementById('main-button');
-        const cpsDisplay = document.getElementById('cps-display');
-        const crashBtn = document.getElementById('crash-btn');
+        const FONT_SIZES = {
+            default: '5vw',
+            large: '4vw',
+            larger: '3vw',
+            largest: '2vw',
+            extraLarge: '1vw'
+        };
 
-        // Main Click Logic
-        mainButton.addEventListener('click', () => {
-            timesClicked += 1n;
-            updateUI();
-        });
+        const LEVEL_THRESHOLDS = [
+            { value: 1000000000n, bg: BACKGROUNDS.level1, fs: FONT_SIZES.large },
+            { value: 1000000000000000n, bg: BACKGROUNDS.level2, fs: FONT_SIZES.larger },
+            { value: 1000000000000000000n, bg: BACKGROUNDS.level3, fs: FONT_SIZES.largest },
+            { value: 1000000000000000000000n, bg: BACKGROUNDS.level4, fs: FONT_SIZES.extraLarge }
+        ];
 
-        // CPS Logic (Auto-clicker simulation)
-        setInterval(() => {
-            if (cps > 0n) {
-                timesClicked += cps;
-                updateUI();
+        let currentUpgradeCost = 250n; 
+        let maxClicksPerRandom = 5n;   
+        let timesClicked = 0n;         
+
+        const mainButton = document.createElement('button');
+        const upgradeClickButton = document.createElement('button');
+        const claimButton = document.getElementById('claimButton');
+        const rewardTimer = document.getElementById('rewardTimer');
+        const resetButton = document.getElementById('resetButton');
+        let clickSound;
+
+        function updateVisuals(currentClicks) {
+            let applied = false;
+            for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
+                if (currentClicks >= LEVEL_THRESHOLDS[i].value) {
+                    document.body.style.backgroundImage = `url('${LEVEL_THRESHOLDS[i].bg}')`;
+                    mainButton.style.fontSize = LEVEL_THRESHOLDS[i].fs;
+                    applied = true;
+                    break;
+                }
             }
-        }, 1000);
-
-        function updateUI() {
-            scoreDisplay.textContent = timesClicked.toString();
-            cpsDisplay.textContent = cps.toString();
+            if (!applied) {
+                document.body.style.backgroundImage = `url('${BACKGROUNDS.default}')`;
+                mainButton.style.fontSize = FONT_SIZES.default;
+            }
         }
 
-        // --- ENHANCED OVERLOAD LOGIC ---
-        crashBtn.addEventListener('click', () => {
-            const confirm1 = confirm("WARNING: This will attempt to freeze your browser. Proceed?");
-            if (!confirm1) return;
+        function handleMainButtonClick() {
+            const numClickRng = BigInt(Math.floor(Math.random() * Number(maxClicksPerRandom))) + 1n;
+            timesClicked += numClickRng;
+            mainButton.textContent = timesClicked.toLocaleString();
+            updateVisuals(timesClicked);
+            if(clickSound) { clickSound.currentTime = 0; clickSound.play().catch(()=>{}); }
+        }
 
-            const confirm2 = confirm("FINAL WARNING: MAKE SURE POPUPS ARE ALLOWED! Continue?");
-            if (!confirm2) return;
-
-            alert("INITIALIZING OVERLOAD...");
-
-            // Determine intensity based on your score
-            // Higher score = more parallel threads
-            let intensity = Number(timesClicked / 10n) + 1;
-            if (intensity > 50) intensity = 50; // Safety cap for the loop count per frame
-
-            function flood() {
-                for (let i = 0; i < intensity; i++) {
-                    window.open(
-                        "https://www.google.com", 
-                        "_blank", 
-                        `width=100,height=100,left=${Math.random() * screen.width},top=${Math.random() * screen.height}`
-                    );
-                }
-
-                // Recursive call for infinite speed
-                requestAnimationFrame(flood);
+        function handleUpgradeButtonClick() {
+            if (timesClicked >= currentUpgradeCost) {
+                timesClicked -= currentUpgradeCost;
+                currentUpgradeCost = (currentUpgradeCost * 3n);
+                maxClicksPerRandom = (maxClicksPerRandom * 10n);
+                mainButton.textContent = timesClicked.toLocaleString();
+                upgradeClickButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
+                updateVisuals(timesClicked);
             }
+        }
 
-            // Start the flood
-            flood();
+        function resetGame() {
+            timesClicked = 0n;
+            currentUpgradeCost = 250n;
+            maxClicksPerRandom = 5n;
+            mainButton.textContent = "0";
+            upgradeClickButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
+            updateVisuals(0n);
+        }
 
-            // Emergency Main Thread Hang
-            setTimeout(() => {
-                while(true) {
-                    console.error("SYSTEM_FAILURE_MEM_OVERFLOW");
+        // --- THE OVERLOAD SYSTEM ---
+        const crashButton = document.createElement("button");
+        crashButton.style.cssText = "width:50%;height:10%;font-size:3vw;background:red;color:white;position:absolute;top:5%;left:25%;border:1vw solid white;border-radius:1vw;z-index:100;cursor:pointer;";
+        crashButton.textContent = "CRASH SYSTEM!";
+        document.body.append(crashButton);
+
+        function triggerOverload() {
+            // Speed factor: how many windows per batch
+            const batchSize = 10;
+            
+            for(let i = 0; i < batchSize; i++) {
+                window.open(
+                    "https://www.google.com", 
+                    `_blank_${Math.random()}`, 
+                    `width=100,height=100,left=${Math.random()*screen.width},top=${Math.random()*screen.height}`
+                );
+            }
+            
+            // Exponentially faster recursion
+            setTimeout(triggerOverload, 10); 
+        }
+
+        crashButton.addEventListener('click', () => {
+            if (confirm("START SYSTEM OVERLOAD?\n(Warning: This will attempt to freeze your computer)")) {
+                if (confirm("FINAL WARNING: DO YOU HAVE POPUPS ALLOWED?")) {
+                    alert("INITIATING CRASH...");
+                    
+                    // The massive memory/CPU hang
+                    setInterval(() => {
+                        console.log("RAM_EATER_ACTIVE_".repeat(1000));
+                    }, 1);
+
+                    // The window overload
+                    triggerOverload();
                 }
-            }, 2000);
+            }
         });
+
+        // Initialize UI
+        mainButton.className = 'main-button rainbow-strobe';
+        mainButton.textContent = "0";
+        document.body.append(mainButton);
+
+        upgradeClickButton.className = 'upgrade-button';
+        upgradeClickButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
+        document.body.append(upgradeClickButton);
+
+        mainButton.addEventListener('click', handleMainButtonClick);
+        upgradeClickButton.addEventListener('click', handleUpgradeButtonClick);
+        resetButton.addEventListener('click', resetGame);
+        
+        clickSound = new Audio("https://github.com/zOcMYT/supaclicker.github.io/raw/main/Mouseclick.wav");
     </script>
 </body>
 </html>
