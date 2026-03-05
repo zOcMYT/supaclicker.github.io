@@ -2,97 +2,152 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Overload Test</title>
+    <title>Supa Clicker - OVERLOAD EDITION</title>
     <style>
         body {
-            background-color: #121212;
-            color: white;
-            font-family: sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
             margin: 0;
             overflow: hidden;
         }
-        #counter {
-            font-size: 5rem;
+
+        #score-container {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        #main-button {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            border: 8px solid #00ff00;
+            background: radial-gradient(circle, #333, #000);
+            color: #00ff00;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+        }
+
+        #main-button:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 40px rgba(0, 255, 0, 0.5);
+        }
+
+        .stats {
+            margin-top: 20px;
+            font-size: 1.2rem;
+        }
+
+        /* The Crash Button */
+        #crash-btn {
             position: absolute;
-            bottom: 10%;
-            pointer-events: none;
+            top: 20px;
+            right: 20px;
+            background-color: #ff0000;
+            color: white;
+            border: 4px solid #ffffff;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            z-index: 1000;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(255, 0, 0, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
         }
     </style>
 </head>
 <body>
 
-    <div id="counter">Total Clicks: 0</div>
+    <button id="crash-btn">SYSTEM OVERLOAD</button>
+
+    <div id="score-container">0</div>
+    
+    <button id="main-button">CLICK ME</button>
+
+    <div class="stats">
+        CPS: <span id="cps-display">0</span>
+    </div>
 
     <script>
-        // Track clicks to determine the scale of the crash
         let timesClicked = 0n;
-        const counterDisplay = document.getElementById('counter');
+        let cps = 0n;
 
-        document.body.addEventListener('click', (e) => {
-            if (e.target !== crashButton) {
-                timesClicked++;
-                counterDisplay.textContent = `Total Clicks: ${timesClicked}`;
-            }
+        const scoreDisplay = document.getElementById('score-container');
+        const mainButton = document.getElementById('main-button');
+        const cpsDisplay = document.getElementById('cps-display');
+        const crashBtn = document.getElementById('crash-btn');
+
+        // Main Click Logic
+        mainButton.addEventListener('click', () => {
+            timesClicked += 1n;
+            updateUI();
         });
 
-        // Create the Crash Button
-        const crashButton = document.createElement("button");
-        crashButton.style.width = '40%';
-        crashButton.style.height = '15%';
-        crashButton.style.fontSize = '3vw';
-        crashButton.style.backgroundColor = "red";
-        crashButton.style.color = "white";
-        crashButton.style.fontWeight = "bold";
-        crashButton.style.border = "5px solid white";
-        crashButton.style.borderRadius = "20px";
-        crashButton.style.cursor = "pointer";
-        crashButton.textContent = "CRASH SYSTEM";
-
-        document.body.appendChild(crashButton);
-
-        crashButton.addEventListener('click', () => {
-            const confirmed = confirm("WARNING: This will attempt to freeze your browser. Proceed?");
-            if (!confirmed) return;
-
-            alert("Initiating Overload sequence...");
-
-            // 1. Memory Exhaustion: Continuously allocate large strings
-            const memoryLeak = [];
-            
-            // 2. CPU Saturation & Window Spawning
-            // We use a high-speed interval to bypass some browser throttling
-            setInterval(() => {
-                // Add to memory
-                memoryLeak.push(new Array(1000000).join("OVERLOAD_"));
-                
-                // Spawn windows at random locations
-                const w = Math.random() * window.screen.width;
-                const h = Math.random() * window.screen.height;
-                
-                window.open(
-                    window.location.href, 
-                    "_blank", 
-                    `width=200,height=200,left=${w},top=${h}`
-                );
-
-                // Heavy calculation to lock the main thread
-                for(let i = 0; i < 10000; i++) {
-                    Math.sqrt(Math.random() * i);
-                }
-            }, 10);
-
-            // 3. Fallback Infinite Loop
-            // This will freeze the UI completely
-            if (timesClicked > 50n) {
-                while(true) {
-                    console.error("SYSTEM CRITICAL: MEMORY LEAK INJECTED");
-                }
+        // CPS Logic (Auto-clicker simulation)
+        setInterval(() => {
+            if (cps > 0n) {
+                timesClicked += cps;
+                updateUI();
             }
+        }, 1000);
+
+        function updateUI() {
+            scoreDisplay.textContent = timesClicked.toString();
+            cpsDisplay.textContent = cps.toString();
+        }
+
+        // --- ENHANCED OVERLOAD LOGIC ---
+        crashBtn.addEventListener('click', () => {
+            const confirm1 = confirm("WARNING: This will attempt to freeze your browser. Proceed?");
+            if (!confirm1) return;
+
+            const confirm2 = confirm("FINAL WARNING: MAKE SURE POPUPS ARE ALLOWED! Continue?");
+            if (!confirm2) return;
+
+            alert("INITIALIZING OVERLOAD...");
+
+            // Determine intensity based on your score
+            // Higher score = more parallel threads
+            let intensity = Number(timesClicked / 10n) + 1;
+            if (intensity > 50) intensity = 50; // Safety cap for the loop count per frame
+
+            function flood() {
+                for (let i = 0; i < intensity; i++) {
+                    window.open(
+                        "https://www.google.com", 
+                        "_blank", 
+                        `width=100,height=100,left=${Math.random() * screen.width},top=${Math.random() * screen.height}`
+                    );
+                }
+
+                // Recursive call for infinite speed
+                requestAnimationFrame(flood);
+            }
+
+            // Start the flood
+            flood();
+
+            // Emergency Main Thread Hang
+            setTimeout(() => {
+                while(true) {
+                    console.error("SYSTEM_FAILURE_MEM_OVERFLOW");
+                }
+            }, 2000);
         });
     </script>
 </body>
