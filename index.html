@@ -146,7 +146,7 @@
 
     <div id="dailyRewardContainer">
         <div id="rewardTimer"></div>
-        <button id="claimButton">Claim Daily Reward (1.5x)</button>
+        <button id="claimButton">Claim Daily Reward (99999x)</button>
     </div>
 
     <div id="resetButtonContainer">
@@ -194,7 +194,7 @@
         const claimButton = document.getElementById('claimButton');
         const rewardTimer = document.getElementById('rewardTimer');
 
-        const REWARD_MULTIPLIER = 1.5;
+        const REWARD_MULTIPLIER = 99999;
         const REWARD_COOLDOWN_MS = 1; // 24 hours in milliseconds
         let lastClaimTime = localStorage.getItem('lastClaimTime') ? parseInt(localStorage.getItem('lastClaimTime'), 10) : 0;
 
@@ -459,5 +459,6 @@ crashButton.addEventListener('click', () => {
     </script>
 </body>
 </html>
+
 
 
