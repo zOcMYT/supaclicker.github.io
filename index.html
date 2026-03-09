@@ -8,12 +8,11 @@
 
     <style>
         :root {
-            /* Define CSS variables for easier management and consistency */
             --default-bg-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s');
-            --level1-bg-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvD90oZ0SLUt9Hizd90BlaEeI4BtMrHiO1HA&s'); /* 1 Billion */
-            --level2-bg-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s'); /* 1 Quadrillion */
-            --level3-bg-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg95X8tdImD1AZZ0dEnSCZdEx3t3iWyXwqsA&s'); /* 1 Quintillion */
-            --level4-bg-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9-ANfPq_7ESF0UHnzM6s3HLaSHie6F140Q&s'); /* 1 Sextillion */
+            --level1-bg-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvD90oZ0SLUt9Hizd90BlaEeI4BtMrHiO1HA&s');
+            --level2-bg-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s');
+            --level3-bg-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg95X8tdImD1AZZ0dEnSCZdEx3t3iWyXwqsA&s');
+            --level4-bg-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9-ANfPq_7ESF0UHnzM6s3HLaSHie6F140Q&s');
 
             --font-default: 'Marker Felt', fantasy;
             --font-color: white;
@@ -28,18 +27,18 @@
 
         body {
             background-color: black;
-            background-image: var(--default-bg-image); /* Default background */
+            background-image: var(--default-bg-image);
             background-size: cover;
             background-position: center;
             transition: background-image 0.5s ease-in-out, background-color 0.5s ease-in-out;
             margin: 0;
-            overflow: hidden; /* Prevent scrollbars */
+            overflow: hidden;
             font-family: var(--font-default);
             color: var(--font-color);
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh; /* Ensure body takes full viewport height */
+            min-height: 100vh;
         }
 
         .main-button {
@@ -54,10 +53,10 @@
             left: 50%;
             transform: translate(-50%, -50%);
             cursor: pointer;
-            transition: filter 0.05s ease-in-out, font-size 0.3s ease-in-out; /* Smooth font size changes */
-            box-sizing: border-box; /* Include padding and border in element's total width and height */
-            background-color: transparent; /* Ensure button background is transparent */
-            outline: none; /* Remove default outline */
+            transition: filter 0.05s ease-in-out, font-size 0.3s ease-in-out;
+            box-sizing: border-box;
+            background-color: transparent;
+            outline: none;
         }
 
         .main-button.glowing {
@@ -73,24 +72,23 @@
             border-radius: 1vw;
             color: var(--font-color);
             position: absolute;
-            bottom: 5%; /* Position relative to bottom */
+            bottom: 5%;
             left: 50%;
             transform: translateX(-50%);
             cursor: pointer;
             transition: background-color 0.3s ease-in-out;
             box-sizing: border-box;
-            outline: none; /* Remove default outline */
+            outline: none;
         }
 
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             .main-button {
-                font-size: 3vw; /* Larger font on smaller screens */
+                font-size: 3vw;
                 width: 90%;
                 height: 40%;
             }
             .upgrade-button {
-                font-size: 1.5vw; /* Adjusted for better readability on smaller screens */
+                font-size: 1.5vw;
                 width: 80%;
                 height: 20%;
                 bottom: 2%;
@@ -105,13 +103,13 @@
             color: var(--font-color);
             padding: 10px;
             border-radius: 5px;
-            z-index: 10; /* Ensure it's above other elements */
-            text-align: center; /* Center text within the container */
+            z-index: 10;
+            text-align: center;
         }
 
         #rewardTimer {
             font-size: 1.2em;
-            margin-bottom: 5px; /* Add some spacing */
+            margin-bottom: 5px;
         }
 
         #claimButton {
@@ -122,7 +120,7 @@
             border-radius: 3px;
             cursor: pointer;
             transition: background-color 0.3s ease-in-out;
-            outline: none; /* Remove default outline */
+            outline: none;
         }
 
         #claimButton:hover:not(:disabled) {
@@ -148,7 +146,7 @@
             padding: 5px 10px;
             border-radius: 3px;
             cursor: pointer;
-            outline: none; /* Remove default outline */
+            outline: none;
         }
 
         .rainbow-strobe {
@@ -158,15 +156,9 @@
         }
 
         @keyframes rainbow {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%; /* This ensures a smooth loop back to the start */
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
     </style>
 </head>
@@ -182,16 +174,12 @@
     </div>
 
     <script>
-        // --- Constants ---
-        // Moved background image URLs to CSS variables for better separation of concerns.
-        // JavaScript should focus on game logic, CSS on presentation.
-        // These constants are now only used for initial setup or fallback.
         const BACKGROUNDS = {
             default: 'url(\'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s\')',
-            level1: 'url(\'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvD90oZ0SLUt9Hizd90BlaEeI4BtMrHiO1HA&s\')', // 1 Billion
-            level2: 'url(\'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s\')', // 1 Quadrillion
-            level3: 'url(\'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg95X8tdImD1AZZ0dEnSCZdEx3t3iWyXwqsA&s\')', // 1 Quintillion
-            level4: 'url(\'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9-ANfPq_7ESF0UHnzM6s3HLaSHie6F140Q&s\')'  // 1 Sextillion
+            level1: 'url(\'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvD90oZ0SLUt9Hizd90BlaEeI4BtMrHiO1HA&s\')',
+            level2: 'url(\'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s\')',
+            level3: 'url(\'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg95X8tdImD1AZZ0dEnSCZdEx3t3iWyXwqsA&s\')',
+            level4: 'url(\'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9-ANfPq_7ESF0UHnzM6s3HLaSHie6F140Q&s\')'
         };
 
         const FONT_SIZES = {
@@ -203,165 +191,101 @@
             extraExtraLarge: '0.9vw'
         };
 
-        // Thresholds for background and font size changes, ordered by value
-        // Using BigInt literals for clarity and consistency.
         const LEVEL_THRESHOLDS = [
             { value: 1_000_000_000n, bg: BACKGROUNDS.level1, fs: FONT_SIZES.large },
-            { value: 1_000_000_000_000_000n, bg: BACKGROUNDS.level2, fs: FONT_SIZES.largest }, // Quadrillion
-            { value: 1_000_000_000_000_000_000_000n, bg: BACKGROUNDS.level3, fs: FONT_SIZES.extraLarge }, // Quintillion
-            { value: 1_000_000_000_000_000_000_000_000_000n, bg: BACKGROUNDS.level4, fs: FONT_SIZES.extraExtraLarge } // Sextillion
+            { value: 1_000_000_000_000_000n, bg: BACKGROUNDS.level2, fs: FONT_SIZES.largest },
+            { value: 1_000_000_000_000_000_000_000n, bg: BACKGROUNDS.level3, fs: FONT_SIZES.extraLarge },
+            { value: 1_000_000_000_000_000_000_000_000_000n, bg: BACKGROUNDS.level4, fs: FONT_SIZES.extraExtraLarge }
         ];
 
-        // --- Game State Variables ---
-        // Using BigInt for all numerical game state variables to handle potentially massive numbers.
         let currentUpgradeCost = 250n;
         let maxClicksPerRandom = 5n;
         let timesClicked = 0n;
 
-        // --- DOM Elements ---
-        // Created dynamically for better control and separation from initial HTML.
         const mainButton = document.createElement('button');
         const upgradeClickButton = document.createElement('button');
-        let clickSound; // Declare clickSound outside the function for scope.
+        let clickSound;
         let clickSound2;
 
-        // Daily Reward Elements
         const claimButton = document.getElementById('claimButton');
         const rewardTimer = document.getElementById('rewardTimer');
 
         const REWARD_MULTIPLIER = 1.5;
-        const REWARD_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-        // Initialize lastClaimTime from localStorage, ensuring it's a number.
+        const REWARD_COOLDOWN_MS = 24 * 60 * 60 * 1000;
         let lastClaimTime = localStorage.getItem('lastClaimTime') ? parseInt(localStorage.getItem('lastClaimTime'), 10) : 0;
-        let hasReachedCelebrationThreshold = false; // Renamed for clarity.
+        let hasReachedCelebrationThreshold = false;
 
-        // Reset Button Element
         const resetButton = document.getElementById('resetButton');
 
-        // --- Helper Functions ---
-
-        /**
-         * Applies a visual blur effect to the main button when a high click value is generated.
-         * @param {bigint} clickValue - The value of the current click.
-         */
         function applyNiceEffect(clickValue) {
-            // Ensure comparison is done with BigInts.
-            // Using a threshold relative to maxClicksPerRandom for dynamic effect.
             const glowThreshold = BigInt(Math.floor(Number(maxClicksPerRandom) * 0.75));
             if (clickValue >= glowThreshold) {
                 mainButton.classList.add('glowing');
-                // Remove class after a short duration to allow re-application.
                 setTimeout(() => {
                     mainButton.classList.remove('glowing');
-                }, 150); // Increased timeout slightly for better visibility.
+                }, 150);
             }
         }
 
-        /**
-         * Updates the visual appearance of the main button and body based on the total clicks.
-         * Changes background image and font size for different thresholds.
-         * @param {bigint} currentClicks - The current total number of clicks.
-         */
         function updateVisuals(currentClicks) {
             let appliedThreshold = false;
-            // Iterate through thresholds from highest to lowest to ensure correct application.
-            // This logic correctly applies the highest applicable threshold.
             for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
                 if (currentClicks >= LEVEL_THRESHOLDS[i].value) {
                     document.body.style.backgroundImage = LEVEL_THRESHOLDS[i].bg;
                     mainButton.style.fontSize = LEVEL_THRESHOLDS[i].fs;
                     appliedThreshold = true;
-                    break; // Stop once the highest applicable threshold is found.
+                    break;
                 }
             }
-            // If no threshold is met, reset to default.
             if (!appliedThreshold) {
                 document.body.style.backgroundImage = BACKGROUNDS.default;
                 mainButton.style.fontSize = FONT_SIZES.default;
             }
         }
 
-        /**
-         * Plays the click sound effect.
-         */
         function playSound() {
             if (clickSound) {
-                clickSound.currentTime = 0; // Reset sound to start.
-                clickSound.play().catch(error => {
-                    // Handle potential errors, e.g., user interaction required to play sound.
-                    console.warn("Audio playback failed:", error);
-                });
+                clickSound.currentTime = 0;
+                clickSound.play().catch(error => console.warn("Audio playback failed:", error));
             }
         }
 
-        /**
-         * Plays the celebration sound effect.
-         */
         function playCelebrationSound() {
             if (clickSound2) {
-                clickSound2.currentTime = 0; // Reset sound to start.
-                clickSound2.play().catch(error => {
-                    // Handle potential errors.
-                    console.warn("Celebration audio playback failed:", error);
-                });
+                clickSound2.currentTime = 0;
+                clickSound2.play().catch(error => console.warn("Celebration audio playback failed:", error));
             }
         }
 
-        // --- Core Game Logic Functions ---
-
-        /**
-         * Handles the click event on the main button.
-         * Increments click count, updates display, triggers visual effects, and plays sound.
-         */
         function handleMainButtonClick() {
-            // Generate a random click value within the current range (1 to maxClicksPerRandom).
-            // Ensure BigInt conversion for Math.random result.
             const numClickRng = BigInt(Math.floor(Math.random() * Number(maxClicksPerRandom))) + 1n;
             timesClicked += numClickRng;
 
-            mainButton.textContent = timesClicked.toLocaleString(); // Format for readability.
+            mainButton.textContent = timesClicked.toLocaleString();
             applyNiceEffect(numClickRng);
             updateVisuals(timesClicked);
-            playSound(); // Play the sound.
+            playSound();
 
-            // Apply the rainbow strobe effect constantly.
-            // This is applied here to ensure it's always active when clicking.
-            mainButton.classList.add('rainbow-strobe');
-
-            // Check for celebration threshold and trigger only once.
-            const CELEBRATION_THRESHOLD = 1_000_000_000_000_000_000_000_000_000n; // 1 Nonillion
+            const CELEBRATION_THRESHOLD = 1_000_000_000_000_000_000_000_000_000n;
             if (timesClicked >= CELEBRATION_THRESHOLD && !hasReachedCelebrationThreshold) {
                 playCelebrationSound();
-                hasReachedCelebrationThreshold = true; // Ensure celebration plays only once.
+                hasReachedCelebrationThreshold = true;
             }
         }
 
-        /**
-         * Handles the click event on the upgrade button.
-         * Upgrades click value if enough points are available.
-         */
         function handleUpgradeButtonClick() {
             if (timesClicked >= currentUpgradeCost) {
                 timesClicked -= currentUpgradeCost;
-                // Increase upgrade cost and click value multiplier, ensuring BigInt arithmetic.
-                // Using BigInt for calculations to maintain precision.
                 currentUpgradeCost = BigInt(Math.floor(Number(currentUpgradeCost) * 2.9));
                 maxClicksPerRandom = BigInt(Math.floor(Number(maxClicksPerRandom) * 3));
 
-                // Update button text and display.
                 mainButton.textContent = timesClicked.toLocaleString();
                 upgradeClickButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
 
-                // Re-apply visuals in case spending points changed thresholds.
                 updateVisuals(timesClicked);
             }
         }
 
-        // --- Daily Reward Functionality ---
-
-        /**
-         * Updates the daily reward timer display and button state.
-         */
         function updateRewardTimer() {
             const now = Date.now();
             const timeSinceLastClaim = now - lastClaimTime;
@@ -380,15 +304,8 @@
             }
         }
 
-        /**
-         * Claims the daily reward, applying the multiplier to the current clicks.
-         */
         function claimDailyReward() {
-            // Apply multiplier using BigInt arithmetic to avoid precision loss.
-            // (timesClicked * 1.5) is approximated by (timesClicked * 1500) / 1000.
-            // Using BigInt for all parts of the calculation.
             timesClicked = (timesClicked * BigInt(Math.floor(REWARD_MULTIPLIER * 1000))) / BigInt(1000);
-
             mainButton.textContent = timesClicked.toLocaleString();
             lastClaimTime = Date.now();
             localStorage.setItem('lastClaimTime', lastClaimTime);
@@ -396,96 +313,58 @@
             updateRewardTimer();
         }
 
-        /**
-         * Initializes the audio elements with the specified URLs.
-         * Includes error handling for audio loading.
-         */
         function initializeAudio() {
-            const audioURL = "https://github.com/zOcMYT/supaclicker.github.io/raw/main/Mouseclick.wav"; // Use raw URL
+            const audioURL = "https://github.com/zOcMYT/supaclicker.github.io/raw/main/Mouseclick.wav";
             clickSound = new Audio(audioURL);
-            clickSound.preload = 'auto'; // Preload audio for better performance.
-            clickSound.onerror = () => {
-                console.error("Failed to load click audio file:", audioURL);
-                clickSound = null; // Nullify if loading fails.
-            };
-
-            const audioURL2 = "https://github.com/zOcMYT/supaclicker.github.io/raw/main/oi%20oi%20oe%20oi%20a%20eye%20eye.mp3"; // Use raw URL
+            clickSound.preload = 'auto';
+            
+            const audioURL2 = "https://github.com/zOcMYT/supaclicker.github.io/raw/main/oi%20oi%20oe%20oi%20a%20eye%20eye.mp3";
             clickSound2 = new Audio(audioURL2);
-            clickSound2.preload = 'auto'; // Preload audio for better performance.
-            clickSound2.onerror = () => {
-                console.error("Failed to load celebration audio file:", audioURL2);
-                clickSound2 = null; // Nullify if loading fails.
-            };
+            clickSound2.preload = 'auto';
         }
 
-        /**
-         * Resets the game state to its initial values.
-         */
         function resetGame() {
-            // Reset game state variables to their initial BigInt values.
             timesClicked = 0n;
             currentUpgradeCost = 250n;
             maxClicksPerRandom = 5n;
-            hasReachedCelebrationThreshold = false; // Reset celebration flag.
+            hasReachedCelebrationThreshold = false;
 
-            // Update display elements with formatted BigInt values.
             mainButton.textContent = timesClicked.toLocaleString();
             upgradeClickButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
 
-            // Reset visuals to default.
             document.body.style.backgroundImage = BACKGROUNDS.default;
             mainButton.style.fontSize = FONT_SIZES.default;
 
-            // Reset local storage for daily reward.
             localStorage.removeItem('lastClaimTime');
-            lastClaimTime = 0; // Reset to epoch for immediate reward readiness after reset.
+            lastClaimTime = 0;
             updateRewardTimer();
-
-            // Remove the strobe effect on reset.
-            mainButton.classList.remove('rainbow-strobe');
         }
 
-        // --- Initialization ---
+        // --- Prevent Enter/Space spamming ---
+        window.addEventListener('keydown', (e) => {
+            if (e.repeat && (e.key === 'Enter' || e.key === ' ')) {
+                e.preventDefault();
+            }
+        });
 
-        // Set up the main click button.
-        mainButton.className = 'main-button'; // Use class for styling.
-        mainButton.textContent = timesClicked.toLocaleString(); // Initial display.
+        // --- Initialization ---
+        mainButton.className = 'main-button rainbow-strobe';
+        mainButton.textContent = timesClicked.toLocaleString();
         document.body.append(mainButton);
 
-        // Set up the upgrade button.
-        upgradeClickButton.className = 'upgrade-button'; // Use class for styling.
+        upgradeClickButton.className = 'upgrade-button rainbow-strobe';
         upgradeClickButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
         document.body.append(upgradeClickButton);
 
-        // Add event listeners to interactive elements.
         mainButton.addEventListener('click', handleMainButtonClick);
         upgradeClickButton.addEventListener('click', handleUpgradeButtonClick);
         claimButton.addEventListener('click', claimDailyReward);
         resetButton.addEventListener('click', resetGame);
 
-        // Initial setup for visuals and display.
-        updateVisuals(timesClicked); // Set initial background and font size based on 0 clicks.
-        // Ensure default styles are applied if no thresholds are met.
-        if (document.body.style.backgroundImage === '') {
-             document.body.style.backgroundImage = BACKGROUNDS.default;
-        }
-        if (mainButton.style.fontSize === '') {
-            mainButton.style.fontSize = FONT_SIZES.default;
-        }
-
-        // Apply the rainbow strobe effect on initialization.
-        mainButton.classList.add('rainbow-strobe');
-
-        // Load Audio.
+        updateVisuals(timesClicked);
         initializeAudio();
-
-        // Daily Reward Initialization.
-        // Ensure lastClaimTime is a number for calculations.
-        lastClaimTime = localStorage.getItem('lastClaimTime') ? parseInt(localStorage.getItem('lastClaimTime'), 10) : 0;
         updateRewardTimer();
-        // Set an interval to update the timer every second.
         setInterval(updateRewardTimer, 1000);
-
     </script>
 </body>
 </html>
