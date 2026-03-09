@@ -192,6 +192,7 @@
         const mainButton = document.createElement('button'); // Renamed from defButton for clarity
         const upgradeClickButton = document.createElement('button');
         let clickSound; // Declare clickSound outside the function
+        let clickSound2;
 
         // Daily Reward Elements
         const claimButton = document.getElementById('claimButton');
@@ -200,6 +201,7 @@
         const REWARD_MULTIPLIER = 1.5;
         const REWARD_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
         let lastClaimTime = localStorage.getItem('lastClaimTime') ? parseInt(localStorage.getItem('lastClaimTime'), 10) : 0;
+        let celebOp = true;
 
         // Reset Button Element
         const resetButton = document.getElementById('resetButton');
@@ -259,6 +261,13 @@
 
             // Apply the rainbow strobe effect constantly
             mainButton.classList.add('rainbow-strobe');
+
+            if (timesClicked >= 1_000_000_000_000_000_000_000_000_000n)    {
+                if (celebOp) {
+                    celebrate();
+                    celebOp = false;
+                }
+            }
         }
 
         /**
@@ -290,6 +299,16 @@
                 clickSound.play().catch(error => {
                     // Handle potential errors, e.g., user interaction required to play sound
                     console.warn("Audio playback failed:", error);
+                });
+            }
+        }
+
+        function celebrate() {
+            if (clickSound2) {
+             clickSound2.currentTime = 0; // Reset sound to start
+             clickSound2.play().catch(error => {
+                    // Handle potential errors, e.g., user interaction required to play sound
+                    console2.warn("Audio playback failed:", error);
                 });
             }
         }
@@ -343,6 +362,14 @@
             clickSound.onerror = () => {
                 console.error("Failed to load audio file:", audioURL);
                 clickSound = null; // Nullify if loading fails
+
+            const audioURL2 = "https://github.com/zOcMYT/supaclicker.github.io/raw/main/oi%20oi%20oe%20oi%20a%20eye%20eye.mp3"; // Use raw URL
+            clickSound2 = new Audio(audioURL);
+            clickSound2.preload = 'auto'; // Preload audio for better performance
+            // Add error handling for audio loading
+            clickSound2.onerror = () => {
+                console2.error("Failed to load audio file:", audioURL);
+                clickSound2 = null; // Nullify if loading fails
             };
         }
 
@@ -417,3 +444,4 @@
     </script>
 </body>
 </html>
+
