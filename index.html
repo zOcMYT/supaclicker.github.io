@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supa Clicker</title>
+    <title>Supa Clicker Pro</title>
     <link rel="icon" href="https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/refs/heads/main/ButtonIcon.png">
 
     <style>
@@ -13,292 +13,326 @@
             --level2-bg-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s');
             --level3-bg-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg95X8tdImD1AZZ0dEnSCZdEx3t3iWyXwqsA&s');
             --level4-bg-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9-ANfPq_7ESF0UHnzM6s3HLaSHie6F140Q&s');
-
             --font-default: 'Marker Felt', fantasy;
             --font-color: white;
-            --button-border-color: #ffffff;
-            --ui-overlay-bg: rgba(0, 0, 0, 0.8);
+            --ui-overlay-bg: rgba(0, 0, 0, 0.85);
         }
 
         body {
-            background-color: black;
-            background-image: var(--default-bg-image);
+            background: black var(--default-bg-image) no-repeat center center fixed;
             background-size: cover;
-            background-position: center;
-            transition: background-image 0.5s ease-in-out;
-            margin: 0;
-            overflow: hidden;
-            font-family: var(--font-default);
-            color: var(--font-color);
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            margin: 0; overflow: hidden;
+            font-family: var(--font-default); color: var(--font-color);
+            height: 100vh; width: 100vw;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: background-image 0.8s ease-in-out;
             user-select: none;
         }
 
-        #dailyRewardContainer {
-            position: absolute; top: 20px; left: 20px;
-            background-color: var(--ui-overlay-bg);
-            padding: 15px; border-radius: 10px; z-index: 9999;
-            text-align: center; border: 1px solid white;
+        /* Top Bar: Progress & Rewards */
+        #topBar {
+            position: absolute; top: 0; width: 100%; height: 80px;
+            background: var(--ui-overlay-bg); border-bottom: 2px solid white;
+            display: flex; justify-content: space-around; align-items: center; z-index: 100;
         }
 
+        #progessContainer { width: 300px; height: 20px; background: #333; border: 2px solid white; border-radius: 10px; position: relative; overflow: hidden; }
+        #progressBar { width: 0%; height: 100%; background: linear-gradient(90deg, #00ff00, #ffff00); transition: width 0.3s; }
+        #levelText { position: absolute; width: 100%; text-align: center; top: 0; font-size: 0.9rem; text-shadow: 1px 1px 2px black; }
+
+        /* Left Bar: Stats */
         #statsContainer {
-            position: absolute; bottom: 20px; left: 20px;
-            background-color: var(--ui-overlay-bg);
-            padding: 15px; border-radius: 10px; z-index: 9999;
-            border: 1px solid white; min-width: 180px; pointer-events: none;
+            position: absolute; left: 20px; bottom: 20px;
+            background: var(--ui-overlay-bg); padding: 15px; border-radius: 12px;
+            border: 2px solid white; z-index: 100; min-width: 150px;
         }
 
-        #statsContainer div { font-size: 1.4rem; margin: 5px 0; white-space: nowrap; }
+        /* Right Bar: Shop */
+        #shopContainer {
+            position: absolute; right: 20px; top: 100px; bottom: 20px;
+            width: 280px; background: var(--ui-overlay-bg); padding: 15px;
+            border-radius: 12px; border: 2px solid white; z-index: 100;
+            display: flex; flex-direction: column; gap: 15px; overflow-y: auto;
+        }
 
-        #resetButtonContainer { position: absolute; top: 20px; right: 20px; z-index: 9999; }
+        .shop-item {
+            background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px;
+            border: 1px solid #555; cursor: pointer; transition: 0.2s;
+        }
+        .shop-item:hover { background: rgba(255,255,255,0.2); transform: translateX(-5px); }
+        .shop-item:active { transform: scale(0.95); }
+        .shop-item.locked { opacity: 0.5; cursor: not-allowed; }
 
+        /* Main Game Elements */
         .main-button {
-            display: inline-block; min-width: 300px; padding: 40px 60px;
-            font-size: 5vw; border: 0.8vw solid var(--button-border-color);
-            border-radius: 20px; color: var(--font-color); cursor: pointer;
-            transition: transform 0.05s; background-color: transparent;
-            margin-bottom: 20px; text-align: center;
-            position: relative;
+            width: 350px; height: 350px; font-size: 3rem; 
+            border: 10px solid white; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; position: relative;
+            background: rgba(0,0,0,0.5); box-shadow: 0 0 50px rgba(255,255,255,0.2);
+            transition: transform 0.05s, box-shadow 0.1s;
         }
-
-        .main-button:active { transform: scale(0.9); }
-
-        .upgrade-button {
-            display: inline-block; padding: 20px 40px; font-size: 1.5rem;
-            border: 0.4vw solid var(--button-border-color);
-            border-radius: 15px; color: var(--font-color); cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .upgrade-button:hover { background: rgba(255,255,255,0.1); }
+        .main-button:active { transform: scale(0.92); box-shadow: 0 0 80px rgba(255,255,255,0.5); }
 
         .rainbow-strobe {
-            background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
-            background-size: 400% 400%;
-            animation: rainbow 3s linear infinite;
+            animation: rainbowBorder 3s linear infinite, glow 2s ease-in-out infinite alternate;
         }
 
-        /* Floating Text Animation */
-        .floating-text {
-            position: absolute;
-            pointer-events: none;
-            font-size: 2rem;
-            font-weight: bold;
-            color: white;
-            text-shadow: 2px 2px 4px black;
-            animation: floatUp 0.8s ease-out forwards;
-            z-index: 10000;
+        @keyframes rainbowBorder {
+            0% { border-color: red; } 16% { border-color: orange; } 33% { border-color: yellow; }
+            50% { border-color: green; } 66% { border-color: blue; } 83% { border-color: indigo; }
+            100% { border-color: violet; }
         }
 
-        .crit-text { color: #ffcc00; font-size: 3rem; }
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+            to { box-shadow: 0 0 50px rgba(255,255,255,0.6); }
+        }
 
-        @keyframes floatUp {
+        /* Particles */
+        .particle {
+            position: fixed; pointer-events: none;
+            font-size: 2rem; font-weight: bold; text-shadow: 2px 2px 4px black;
+            animation: particleFloat 0.7s ease-out forwards; z-index: 1000;
+        }
+        @keyframes particleFloat {
             0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-150px) scale(1.2); opacity: 0; }
+            100% { transform: translateY(-120px) rotate(15deg) scale(1.5); opacity: 0; }
         }
 
-        @keyframes rainbow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+        .crit { color: #ffeb3b; font-size: 3.5rem; }
 
-        #claimButton { background-color: green; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
-        #claimButton:disabled { background-color: gray; cursor: not-allowed; }
-        #resetButton { background-color: red; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        button#resetButton { background-color: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
 
-        @media (max-width: 768px) {
-            .main-button { font-size: 8vw; padding: 20px 40px; min-width: 200px; }
-            .upgrade-button { font-size: 1rem; }
-            #statsContainer div { font-size: 1rem; }
-        }
+        /* Scrollbar */
+        #shopContainer::-webkit-scrollbar { width: 5px; }
+        #shopContainer::-webkit-scrollbar-thumb { background: white; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="dailyRewardContainer">
-        <div id="rewardTimer">Calculating...</div>
-        <button id="claimButton">Claim Daily Reward (1.5x)</button>
+    <div id="topBar">
+        <div id="progessContainer">
+            <div id="progressBar"></div>
+            <div id="levelText">Level 0: Starter</div>
+        </div>
+        <div id="dailyRewardContainer">
+            <span id="rewardTimer">00:00:00</span>
+            <button id="claimButton" style="padding: 5px 15px; background: green; color: white; border: none; border-radius: 5px; cursor: pointer;">Daily Reward</button>
+        </div>
+        <button id="resetButton">Reset</button>
     </div>
 
     <div id="statsContainer">
-        <div id="cpsDisplay"><b>CPS:</b> 0</div>
-        <div id="cpmDisplay"><b>CPM:</b> 0</div>
+        <div style="font-size: 1.8rem; margin-bottom: 10px;" id="totalClicks">0</div>
+        <div><b>CPS (Clicks):</b> <span id="cpsDisplay">0</span></div>
+        <div><b>CPM (Clicks):</b> <span id="cpmDisplay">0</span></div>
+        <div><b>Auto-CPS:</b> <span id="autoCpsDisplay">0</span></div>
     </div>
 
-    <div id="resetButtonContainer">
-        <button id="resetButton">Reset Game</button>
+    <div id="shopContainer">
+        <h2 style="margin:0 0 10px 0; text-align: center;">SHOP</h2>
+        <div class="shop-item" id="btnUpgrade">
+            <b>Upgrade Click</b><br>
+            <span id="upgradeCostDisplay">Cost: 250</span><br>
+            <small>Increases Points/Click</small>
+        </div>
+        <div class="shop-item" id="btnAuto">
+            <b>Buy Helper</b><br>
+            <span id="autoCostDisplay">Cost: 500</span><br>
+            <small>+1 Click Automatically Every Sec</small>
+        </div>
     </div>
+
+    <div class="main-button rainbow-strobe" id="mainButton">0</div>
 
     <script>
-        let timesClicked = BigInt(localStorage.getItem('sc_clicks') || "0");
-        let currentUpgradeCost = BigInt(localStorage.getItem('sc_cost') || "250");
-        let maxClicksPerRandom = BigInt(localStorage.getItem('sc_power') || "5");
-        let lastClaimTime = parseInt(localStorage.getItem('sc_claimTime') || "0");
+        // State
+        let timesClicked = BigInt(localStorage.getItem('sc_clicks_v2') || "0");
+        let clickPowerLevel = BigInt(localStorage.getItem('sc_pwr_v2') || "5");
+        let upgradeCost = BigInt(localStorage.getItem('sc_cost_v2') || "250");
+        let autoCPS = parseInt(localStorage.getItem('sc_auto_v2') || "0");
+        let autoCost = BigInt(localStorage.getItem('sc_autocost_v2') || "500");
+        let lastClaimTime = parseInt(localStorage.getItem('sc_claim_v2') || "0");
         
         let clickHistory = [];
 
-        const BACKGROUNDS = {
-            default: 'url(\'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s\')',
-            level1: 'url(\'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvD90oZ0SLUt9Hizd90BlaEeI4BtMrHiO1HA&s\')',
-            level2: 'url(\'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s\')',
-            level3: 'url(\'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg95X8tdImD1AZZ0dEnSCZdEx3t3iWyXwqsA&s\')',
-            level4: 'url(\'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9-ANfPq_7ESF0UHnzM6s3HLaSHie6F140Q&s\')'
-        };
+        // Constants
+        const RAW_OI = "https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/oi%20oi%20oe%20oi%20a%20eye%20eye.mp3";
+        const RAW_CLICK = "https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/raw/main/Mouseclick.wav";
+        
+        const sndClick = new Audio(RAW_CLICK);
+        const sndOi = new Audio(RAW_OI);
 
-        const LEVEL_THRESHOLDS = [
-            { value: 1_000_000_000n, bg: BACKGROUNDS.level1 },
-            { value: 1_000_000_000_000_000n, bg: BACKGROUNDS.level2 },
-            { value: 1_000_000_000_000_000_000_000n, bg: BACKGROUNDS.level3 },
-            { value: 1_000_000_000_000_000_000_000_000_000n, bg: BACKGROUNDS.level4 }
+        const THRESHOLDS = [
+            { name: "Starter", val: 0n, bg: 'var(--default-bg-image)' },
+            { name: "Billions Club", val: 1_000_000_000n, bg: 'var(--level1-bg-image)' },
+            { name: "Quadrillionaire", val: 1_000_000_000_000_000n, bg: 'var(--level2-bg-image)' },
+            { name: "Universe", val: 1_000_000_000_000_000_000_000n, bg: 'var(--level3-bg-image)' },
+            { name: "God Mode", val: 1_000_000_000_000_000_000_000_000_000n, bg: 'var(--level4-bg-image)' }
         ];
 
-        const clickSound = new Audio("https://github.com/zOcMYT/supaclicker.github.io/raw/main/Mouseclick.wav");
-        const oiSound = new Audio("https://github.com/zOcMYT/supaclicker.github.io/raw/main/oi%20oi%20oe%20oi%20a%20eye%20eye.mp3");
+        // Elements
+        const mainBtn = document.getElementById('mainButton');
+        const totalClicksVal = document.getElementById('totalClicks');
+        const progressBar = document.getElementById('progressBar');
+        const levelText = document.getElementById('levelText');
 
-        const mainButton = document.createElement('button');
-        mainButton.className = 'main-button rainbow-strobe';
-        mainButton.textContent = timesClicked.toLocaleString();
-        document.body.appendChild(mainButton);
-
-        const upgradeButton = document.createElement('button');
-        upgradeButton.className = 'upgrade-button rainbow-strobe';
-        upgradeButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
-        document.body.appendChild(upgradeButton);
-
-        const cpsDisplay = document.getElementById('cpsDisplay');
-        const cpmDisplay = document.getElementById('cpmDisplay');
-        const claimButton = document.getElementById('claimButton');
-        const rewardTimer = document.getElementById('rewardTimer');
-        const resetButton = document.getElementById('resetButton');
-
-        function saveGame() {
-            localStorage.setItem('sc_clicks', timesClicked.toString());
-            localStorage.setItem('sc_cost', currentUpgradeCost.toString());
-            localStorage.setItem('sc_power', maxClicksPerRandom.toString());
-            localStorage.setItem('sc_claimTime', lastClaimTime.toString());
+        // Logic
+        function save() {
+            localStorage.setItem('sc_clicks_v2', timesClicked.toString());
+            localStorage.setItem('sc_pwr_v2', clickPowerLevel.toString());
+            localStorage.setItem('sc_cost_v2', upgradeCost.toString());
+            localStorage.setItem('sc_auto_v2', autoCPS.toString());
+            localStorage.setItem('sc_autocost_v2', autoCost.toString());
+            localStorage.setItem('sc_claim_v2', lastClaimTime.toString());
         }
 
-        // Floating Text Logic
-        function showFloatingText(amount, x, y, isCrit) {
-            const text = document.createElement('div');
-            text.className = `floating-text ${isCrit ? 'crit-text' : ''}`;
-            text.textContent = `+${amount.toLocaleString()}${isCrit ? ' CRIT!' : ''}`;
-            text.style.left = `${x}px`;
-            text.style.top = `${y}px`;
-            document.body.appendChild(text);
-            setTimeout(() => text.remove(), 800);
+        function createParticle(x, y, text, isCrit) {
+            const p = document.createElement('div');
+            p.className = `particle ${isCrit ? 'crit' : ''}`;
+            p.textContent = (isCrit ? "🔥 " : "+") + text;
+            p.style.left = x + 'px';
+            p.style.top = y + 'px';
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 700);
         }
 
-        function recordClick() {
-            clickHistory.push(Date.now());
-        }
+        function updateUI() {
+            totalClicksVal.textContent = timesClicked.toLocaleString() + " Points";
+            mainBtn.textContent = timesClicked.toLocaleString();
+            document.getElementById('upgradeCostDisplay').textContent = "Cost: " + upgradeCost.toLocaleString();
+            document.getElementById('autoCostDisplay').textContent = "Cost: " + autoCost.toLocaleString();
+            document.getElementById('autoCpsDisplay').textContent = autoCPS;
 
-        function updateStats() {
-            const now = Date.now();
-            clickHistory = clickHistory.filter(timestamp => now - timestamp <= 60000);
-            const cpsCount = clickHistory.filter(timestamp => now - timestamp <= 1000).length;
-            const cpmCount = clickHistory.length;
-            cpsDisplay.innerHTML = `<b>CPS:</b> ${cpsCount.toLocaleString()}`;
-            cpmDisplay.innerHTML = `<b>CPM:</b> ${cpmCount.toLocaleString()}`;
-        }
-
-        function updateVisuals() {
-            let bg = BACKGROUNDS.default;
-            for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
-                if (timesClicked >= LEVEL_THRESHOLDS[i].value) { bg = LEVEL_THRESHOLDS[i].bg; break; }
+            // Handle Leveling/Progress
+            let currentIdx = 0;
+            for(let i=THRESHOLDS.length-1; i>=0; i--) {
+                if(timesClicked >= THRESHOLDS[i].val) {
+                    currentIdx = i;
+                    break;
+                }
             }
-            document.body.style.backgroundImage = bg;
-            mainButton.textContent = timesClicked.toLocaleString();
-            upgradeButton.textContent = `Upgrade Click Value (${currentUpgradeCost.toLocaleString()})`;
+            
+            document.body.style.backgroundImage = THRESHOLDS[currentIdx].bg;
+            
+            const nextLevel = THRESHOLDS[currentIdx + 1];
+            if(nextLevel) {
+                const currentThresh = THRESHOLDS[currentIdx].val;
+                const nextThresh = nextLevel.val;
+                const progress = Number((timesClicked - currentThresh) * 100n / (nextThresh - currentThresh));
+                progressBar.style.width = progress + "%";
+                levelText.textContent = `World:  ${THRESHOLDS[currentIdx].name} (${progress}%)`;
+            } else {
+                progressBar.style.width = "100%";
+                levelText.textContent = `Max World Reached: ${THRESHOLDS[currentIdx].name}`;
+            }
         }
 
-        function doClick(e) {
-            let reward = BigInt(Math.floor(Math.random() * Number(maxClicksPerRandom))) + 1n;
+        function handleEventClick(e) {
+            if(e) e.preventDefault();
             
-            // Critical Click Logic (10% chance for 10x reward)
-            const isCrit = Math.random() < 0.10;
-            if (isCrit) reward *= 10n;
+            let isCrit = Math.random() < 0.1;
+            let gain = BigInt(Math.floor(Math.random() * Number(clickPowerLevel))) + 1n;
+            if (isCrit) gain *= 10n;
 
-            timesClicked += reward;
-            recordClick();
+            timesClicked += gain;
+            clickHistory.push(Date.now());
             
-            // Show floating text at mouse or button center
+            // X/Y coordinates for particles
             const x = e ? e.clientX : window.innerWidth / 2;
             const y = e ? e.clientY : window.innerHeight / 2;
-            showFloatingText(reward, x, y, isCrit);
+            createParticle(x, y, gain.toLocaleString(), isCrit);
 
-            const lastLevelThreshold = LEVEL_THRESHOLDS[LEVEL_THRESHOLDS.length - 1].value;
-            if (timesClicked >= lastLevelThreshold) {
-                oiSound.currentTime = 0;
-                oiSound.play().catch(() => {});
+            // Audio logic
+            const maxThresh = THRESHOLDS[THRESHOLDS.length - 1].val;
+            if (timesClicked >= maxThresh) {
+                sndOi.currentTime = 0;
+                sndOi.play().catch(()=>{});
             } else {
-                clickSound.currentTime = 0;
-                clickSound.play().catch(() => {});
+                sndClick.currentTime = 0;
+                sndClick.play().catch(()=>{});
             }
 
-            updateVisuals();
-            saveGame();
+            updateUI();
+            save();
         }
 
-        function doUpgrade() {
-            if (timesClicked >= currentUpgradeCost) {
-                timesClicked -= currentUpgradeCost;
-                currentUpgradeCost = BigInt(Math.floor(Number(currentUpgradeCost) * 2.9));
-                maxClicksPerRandom = BigInt(Math.floor(Number(maxClicksPerRandom) * 3));
-                updateVisuals();
-                saveGame();
+        // Shop Bindings
+        document.getElementById('btnUpgrade').onclick = () => {
+            if(timesClicked >= upgradeCost) {
+                timesClicked -= upgradeCost;
+                clickPowerLevel = BigInt(Math.floor(Number(clickPowerLevel) * 2.5));
+                upgradeCost = BigInt(Math.floor(Number(upgradeCost) * 3));
+                updateUI(); save();
             }
-        }
+        };
 
-        mainButton.addEventListener('mousedown', (e) => { e.preventDefault(); doClick(e); });
-        upgradeButton.addEventListener('click', (e) => { e.preventDefault(); doUpgrade(); });
+        document.getElementById('btnAuto').onclick = () => {
+            if(timesClicked >= autoCost) {
+                timesClicked -= autoCost;
+                autoCPS += 1;
+                autoCost = BigInt(Math.floor(Number(autoCost) * 2));
+                updateUI(); save();
+            }
+        };
 
+        // Loops
+        setInterval(() => {
+            if(autoCPS > 0) {
+                timesClicked += BigInt(autoCPS);
+                updateUI();
+                save();
+            }
+        }, 1000);
+
+        setInterval(() => {
+            const now = Date.now();
+            clickHistory = clickHistory.filter(t => now - t <= 60000);
+            const cps = clickHistory.filter(t => now - t <= 1000).length;
+            document.getElementById('cpsDisplay').textContent = cps;
+            document.getElementById('cpmDisplay').textContent = clickHistory.length;
+        }, 100);
+
+        // Standard event listeners
+        mainBtn.addEventListener('mousedown', handleEventClick);
+        
+        // Block default keys and make them click
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ' || e.code === 'Space') {
+                e.preventDefault();
+            }
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter' || e.key === ' ' || e.code === 'Space') {
+                handleEventClick();
+            }
+        });
+
+        // Daily Reward
         function updateTimer() {
             const diff = (24 * 60 * 60 * 1000) - (Date.now() - lastClaimTime);
             if (diff <= 0) {
-                rewardTimer.textContent = "Reward Ready!";
-                claimButton.disabled = false;
+                document.getElementById('rewardTimer').textContent = "READY!";
+                document.getElementById('claimButton').disabled = false;
             } else {
                 const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
-                rewardTimer.textContent = `Next Reward: ${h}h ${m}m ${s}s`;
-                claimButton.disabled = true;
+                document.getElementById('rewardTimer').textContent = `${h}h ${m}m ${s}s`;
+                document.getElementById('claimButton').disabled = true;
             }
         }
-
-        claimButton.onclick = () => {
-            const bonus = timesClicked / 2n;
-            timesClicked += bonus;
+        document.getElementById('claimButton').onclick = () => {
+            timesClicked += (timesClicked / 2n) + 100n;
             lastClaimTime = Date.now();
-            updateTimer(); updateVisuals(); saveGame();
+            updateUI(); save();
         };
 
-        resetButton.onclick = () => {
-            if(confirm("Wipe all progress?")){
-                localStorage.clear(); location.reload();
-            }
-        };
+        document.getElementById('resetButton').onclick = () => {
+            if(confirm("Wipe everything?")) { localStorage.clear(); location.reload(); }
+        }
 
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ' || e.code === 'Space') e.preventDefault();
-        });
-
-        window.addEventListener('keyup', (e) => {
-            if (e.key === 'Enter' || e.key === ' ' || e.code === 'Space') {
-                if (document.activeElement === mainButton) doClick();
-                if (document.activeElement === upgradeButton) doUpgrade();
-            }
-        });
-
-        updateVisuals();
-        setInterval(updateStats, 100);
         setInterval(updateTimer, 1000);
-        updateTimer();
+        updateUI(); updateTimer();
     </script>
 </body>
 </html>
