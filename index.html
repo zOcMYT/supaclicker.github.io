@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supa Clicker: Infinity</title>
+    <title>Supa Clicker</title>
     <link rel="icon" href="https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/ButtonIcon.png">
 
     <style>
         :root {
-            --ui-bg: rgba(0, 0, 0, 0.92);
-            --neon-blue: #00f2ff;
+            --ui-bg: rgba(0, 0, 0, 0.9);
+            --neon-cyan: #00e5ff;
         }
 
         body {
@@ -23,68 +23,91 @@
             user-select: none;
         }
 
-        /* Dynamic Zoom Wrapper */
         #gameWrapper {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             width: 100%; height: 100%;
         }
 
-        /* Top Info Bar */
+        /* Top Navigation */
         #topBar {
-            position: absolute; top: 0; width: 100%; height: 80px;
-            background: var(--ui-bg); border-bottom: 2px solid white;
+            position: absolute; top: 0; width: 100%; height: 90px;
+            background: var(--ui-bg); border-bottom: 3px solid white;
             display: flex; justify-content: space-around; align-items: center; z-index: 100;
         }
 
-        /* Progress Bar */
         #progessContainer { 
-            width: 300px; height: 20px; background: #222; 
-            border: 2px solid white; border-radius: 10px; position: relative; overflow: hidden; 
+            width: 35%; height: 25px; background: #222; 
+            border: 2px solid white; border-radius: 12px; position: relative; overflow: hidden; 
         }
-        #progressBar { width: 0%; height: 100%; background: linear-gradient(90deg, #00ff88, #00f2ff); transition: width 0.3s; }
-        #levelText { position: absolute; width:100%; text-align:center; font-size: 0.8rem; top: 2px; text-shadow: 1px 1px black; }
+        #progressBar { width: 0%; height: 100%; background: linear-gradient(90deg, #00f2ff, #7000ff); transition: width 0.3s; }
+        #levelText { position: absolute; width:100%; text-align:center; font-size: 1rem; top: 2px; text-shadow: 1px 1px black; }
 
-        /* Side Panels */
-        #statsUI { position: absolute; left: 20px; bottom: 20px; background: var(--ui-bg); padding: 15px; border: 2px solid white; border-radius: 12px; min-width: 180px; }
-        #shopUI { position: absolute; right: 20px; top: 100px; bottom: 20px; width: 280px; background: var(--ui-bg); padding: 15px; border: 2px solid white; border-radius: 12px; overflow-y: auto; }
+        /* Left Stats */
+        #statsUI { 
+            position: absolute; left: 20px; bottom: 20px; background: var(--ui-bg); 
+            padding: 20px; border: 2px solid white; border-radius: 15px; min-width: 220px; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        #statsUI div { margin-bottom: 5px; }
 
-        .shop-item { background: rgba(255,255,255,0.05); padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; cursor: pointer; }
-        .shop-item:hover { background: rgba(255,255,255,0.1); transform: translateX(-5px); }
-        .shop-item b { color: #00f2ff; display: block; }
+        /* Right Shop (Scrollable) */
+        #shopUI { 
+            position: absolute; right: 20px; top: 110px; bottom: 20px; width: 320px; 
+            background: var(--ui-bg); padding: 15px; border: 2px solid white; border-radius: 15px; 
+            overflow-y: auto; display: flex; flex-direction: column; gap: 10px;
+        }
 
-        /* Main Game Button */
+        .shop-item { 
+            background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; 
+            border: 1px solid #444; cursor: pointer; transition: 0.2s;
+        }
+        .shop-item:hover { background: rgba(255,255,255,0.12); transform: scale(1.02); }
+        .shop-item b { color: var(--neon-cyan); display: block; font-size: 1.1rem; }
+        .shop-item small { opacity: 0.7; display: block; margin-bottom: 5px; }
+
+        /* Restored Classic Button */
         #mainButton {
-            width: 320px; height: 320px; font-size: 2.5rem; 
-            border: 10px solid white; border-radius: 50%;
+            width: 300px; height: 300px; font-size: 2.5rem; 
+            border: 12px solid white; border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
             cursor: pointer; position: relative; text-align: center;
-            background: rgba(0,0,0,0.6) center/cover;
-            box-shadow: 0 0 40px rgba(0, 242, 255, 0.3);
-            transition: transform 0.05s, box-shadow 0.2s;
+            background: rgba(0,0,0,0.4);
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+            transition: transform 0.05s; z-index: 10;
         }
-        #mainButton:active { transform: scale(0.92); }
+        #mainButton:active { transform: scale(0.9); }
 
-        /* Lucky Clover Spawn */
-        .clover {
-            position: absolute; width: 60px; height: 60px;
-            background: gold; border-radius: 50%; cursor: pointer;
-            box-shadow: 0 0 20px gold; z-index: 500;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; animation: pulse 1s infinite alternate;
+        .rainbow-strobe { animation: borderRainbow 4s linear infinite; }
+        @keyframes borderRainbow {
+            0% {border-color: #ff0000;} 20% {border-color: #ffff00;} 40% {border-color: #00ff00;}
+            60% {border-color: #00ffff;} 80% {border-color: #ff00ff;} 100% {border-color: #ff0000;}
         }
 
-        @keyframes pulse { from {transform: scale(1);} to {transform: scale(1.2);} }
+        /* Combo Bar */
+        #comboContainer { width: 250px; height: 12px; background: #333; border: 2px solid white; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+        #comboBar { width: 0%; height: 100%; background: var(--neon-cyan); transition: width 0.1s linear; }
 
         /* Floating Particles */
         .p { position: fixed; pointer-events: none; font-weight: bold; animation: pMove 0.8s forwards; z-index: 1000; }
-        @keyframes pMove { 0% {opacity:1; transform:translateY(0);} 100% {opacity:0; transform:translateY(-150px) scale(1.5);} }
+        @keyframes pMove { 0% {opacity:1; transform:translateY(0);} 100% {opacity:0; transform:translateY(-160px) rotate(15deg) scale(1.6);} }
 
-        .shake { animation: shake 0.1s linear; }
-        @keyframes shake { 0%{margin-left:0} 25%{margin-left:5px} 50%{margin-left:-5px} 75%{margin-left:5px} 100%{margin-left:0} }
+        /* Lucky Clover */
+        .clover {
+            position: absolute; width: 70px; height: 70px; background: gold; border-radius: 50%; 
+            cursor: pointer; box-shadow: 0 0 25px gold; z-index: 500; display: flex; 
+            align-items: center; justify-content: center; font-size: 2.5rem; border: 3px solid white;
+            animation: cloverPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes cloverPop { 0%{transform: scale(0);} 100%{transform: scale(1);} }
 
-        #rebirthBtn { background: #6200ea; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        #resetBtn { background: #ff1744; border: none; padding: 5px 10px; color: white; cursor: pointer; border-radius: 4px; }
+        .shake { animation: shakeEffect 0.1s linear; }
+        @keyframes shakeEffect { 0%{transform:translate(1px,1px)} 50%{transform:translate(-2px,-1px)} 100%{transform:translate(1px,1px)} }
+
+        #rebirthBtn { background: #6200ea; color: white; padding: 10px 15px; border: 2px solid white; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        #resetBtn { background: #d32f2f; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; }
+        #shopUI::-webkit-scrollbar { width: 6px; }
+        #shopUI::-webkit-scrollbar-thumb { background: #555; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -93,95 +116,121 @@
     <div id="topBar">
         <div id="progessContainer">
             <div id="progressBar"></div>
-            <div id="levelText">World: Loading...</div>
+            <div id="levelText">Loading World...</div>
         </div>
         <button id="rebirthBtn">Rebirth (0)</button>
         <button id="resetBtn">Soft Reset</button>
     </div>
 
     <div id="statsUI">
-        <div id="scoreLabel" style="font-size: 2rem; color: #00f2ff; margin-bottom: 5px;">0</div>
-        <div><b>CPS:</b> <span id="cpsVal">0</span></div>
+        <div id="scoreLabel" style="font-size: 2rem; color: #ffeb3b; margin-bottom: 10px;">0</div>
         <div><b>Manual Power:</b> <span id="pwrVal">5</span></div>
-        <div><b>Auto-Help:</b> <span id="autoVal">0</span></div>
+        <div><b>Combo:</b> <span id="comboVal">x1.0</span></div>
+        <div id="comboContainer"><div id="comboBar"></div></div>
+        <div style="margin-top:10px;"><b>Shop Mult:</b> <span id="shopMultVal">1.0x</span></div>
+        <div><b>Crit Chance:</b> <span id="critChanceVal">10</span>%</div>
+        <div><b>Crit Damage:</b> <span id="critDmgVal">10</span>x</div>
     </div>
 
     <div id="shopUI">
-        <h3 style="text-align: center; margin-top: 5px;">SUPER SHOP</h3>
-        <div class="shop-item" onclick="buyUpgrade('click')"><b>Manual Buff</b><span id="cCost">Cost: 250</span></div>
-        <div class="shop-item" onclick="buyUpgrade('auto')"><b>Helper Bot</b><span id="aCost">Cost: 500</span></div>
-        <div class="shop-item" onclick="buyUpgrade('crit')"><b>Crit Sync</b><span id="crCost">Cost: 2.5k</span></div>
-        <div class="shop-item" onclick="buyUpgrade('mult')"><b>Mega Multi</b><span id="mCost">Cost: 10k</span></div>
+        <h3 style="text-align: center; margin: 0 0 10px 0;">OMEGA SHOP</h3>
+        <div class="shop-item" onclick="buy('click')"><b>Manual Buff</b><small>Increase power per click</small><span id="cCost">Cost: 250</span></div>
+        <div class="shop-item" onclick="buy('auto')"><b>Helper Bot</b><small>Generates points per second</small><span id="aCost">Cost: 500</span></div>
+        <div class="shop-item" onclick="buy('eff')"><b>Helper Efficiency</b><small>Helpers use more Power (%)</small><span id="effCost">Cost: 5k</span></div>
+        <div class="shop-item" onclick="buy('critC')"><b>Crit Sync</b><small>+3% Crit Chance</small><span id="crCost">Cost: 2.5k</span></div>
+        <div class="shop-item" onclick="buy('critD')"><b>Crit Overload</b><small>+5x Crit Damage</small><span id="cdCost">Cost: 25k</span></div>
+        <div class="shop-item" onclick="buy('mult')"><b>Mega Multi</b><small>Permanent Global Boost</small><span id="mCost">Cost: 10k</span></div>
+        <div class="shop-item" onclick="buy('clover')"><b>Clover Magnet</b><small>Faster Clover spawns</small><span id="clCost">Cost: 50k</span></div>
+        <div class="shop-item" onclick="buy('combo')"><b>Combo Master</b><small>Slower combo decay</small><span id="coCost">Cost: 100k</span></div>
     </div>
 
-    <div id="mainButton">0</div>
+    <div id="mainButton" class="rainbow-strobe">0</div>
 </div>
 
 <script>
-    // --- DATA ---
-    let score = BigInt(localStorage.getItem('v5_score') || "0");
-    let clickPower = BigInt(localStorage.getItem('v5_pwr') || "5");
-    let clickCost = BigInt(localStorage.getItem('v5_cCost') || "250");
-    let autoHelpers = parseInt(localStorage.getItem('v5_auto') || "0");
-    let autoCost = BigInt(localStorage.getItem('v5_aCost') || "500");
-    let critChance = parseInt(localStorage.getItem('v5_crit') || "10");
-    let critCost = BigInt(localStorage.getItem('v5_critCost') || "2500");
-    let shopMult = parseFloat(localStorage.getItem('v5_mult') || "1.0");
-    let shopMultCost = BigInt(localStorage.getItem('v5_mCost') || "10000");
-    let rebirths = parseInt(localStorage.getItem('v5_rebirths') || "0");
+    // --- STATE ---
+    let score = BigInt(localStorage.getItem('v6_score') || "0");
+    let clickPwr = BigInt(localStorage.getItem('v6_pwr') || "5");
+    let clickCost = BigInt(localStorage.getItem('v6_cCost') || "250");
+    let autoBots = parseInt(localStorage.getItem('v6_auto') || "0");
+    let autoCost = BigInt(localStorage.getItem('v6_aCost') || "500");
+    let helperEff = parseFloat(localStorage.getItem('v6_eff') || "0.5"); // 50% start
+    let effCost = BigInt(localStorage.getItem('v6_effCost') || "5000");
+    let critC = parseInt(localStorage.getItem('v6_critC') || "10");
+    let critCCost = BigInt(localStorage.getItem('v6_critCCost') || "2500");
+    let critD = parseInt(localStorage.getItem('v6_critD') || "10");
+    let critDCost = BigInt(localStorage.getItem('v6_critDCost') || "25000");
+    let globalMult = parseFloat(localStorage.getItem('v6_mult') || "1.0");
+    let multCost = BigInt(localStorage.getItem('v6_mCost') || "10000");
+    let cloverRate = parseInt(localStorage.getItem('v6_clover') || "30000"); // 30s
+    let cloverCost = BigInt(localStorage.getItem('v6_cloverCost') || "50000");
+    let comboDecay = parseFloat(localStorage.getItem('v6_comboD') || "2.0");
+    let comboCost = BigInt(localStorage.getItem('v6_comboCost') || "100000");
+    let rebirths = parseInt(localStorage.getItem('v6_rebirths') || "0");
 
-    let clickHistory = [];
+    let comboMeter = 0;
+    let comboBonus = 1.0;
     const sndClick = new Audio("https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/Mouseclick.wav");
     const sndOi = new Audio("https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/oi%20oi%20oe%20oi%20a%20eye%20eye.mp3");
 
     const WORLDS = [
-        { name: "Earth", min: 0n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s', skin: 'https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/ButtonIcon.png' },
-        { name: "Orbit", min: 1_000_000n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvD90oZ0SLUt9Hizd90BlaEeI4BtMrHiO1HA&s', skin: 'none' },
-        { name: "Galaxy", min: 1_000_000_000_000n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s', skin: 'none' },
-        { name: "Reality", min: 1_000_000_000_000_000_000n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9-ANfPq_7ESF0UHnzM6s3HLaSHie6F140Q&s', skin: 'none' }
+        { name: "Earth", min: 0n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s' },
+        { name: "Moon", min: 10_000_000n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvD90oZ0SLUt9Hizd90BlaEeI4BtMrHiO1HA&s' },
+        { name: "Nebula", min: 10_000_000_000_000n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s' },
+        { name: "Void", min: 10_000_000_000_000_000_000n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9-ANfPq_7ESF0UHnzM6s3HLaSHie6F140Q&s' }
     ];
 
     function save() {
-        localStorage.setItem('v5_score', score.toString());
-        localStorage.setItem('v5_pwr', clickPower.toString());
-        localStorage.setItem('v5_cCost', clickCost.toString());
-        localStorage.setItem('v5_auto', autoHelpers.toString());
-        localStorage.setItem('v5_aCost', autoCost.toString());
-        localStorage.setItem('v5_crit', critChance.toString());
-        localStorage.setItem('v5_critCost', critCost.toString());
-        localStorage.setItem('v5_mult', shopMult.toString());
-        localStorage.setItem('v5_mCost', shopMultCost.toString());
-        localStorage.setItem('v5_rebirths', rebirths.toString());
+        localStorage.setItem('v6_score', score.toString());
+        localStorage.setItem('v6_pwr', clickPwr.toString());
+        localStorage.setItem('v6_cCost', clickCost.toString());
+        localStorage.setItem('v6_auto', autoBots.toString());
+        localStorage.setItem('v6_aCost', autoCost.toString());
+        localStorage.setItem('v6_eff', helperEff.toString());
+        localStorage.setItem('v6_effCost', effCost.toString());
+        localStorage.setItem('v6_critC', critC.toString());
+        localStorage.setItem('v6_critCCost', critCCost.toString());
+        localStorage.setItem('v6_critD', critD.toString());
+        localStorage.setItem('v6_critDCost', critDCost.toString());
+        localStorage.setItem('v6_mult', globalMult.toString());
+        localStorage.setItem('v6_mCost', multCost.toString());
+        localStorage.setItem('v6_clover', cloverRate.toString());
+        localStorage.setItem('v6_cloverCost', cloverCost.toString());
+        localStorage.setItem('v6_comboD', comboDecay.toString());
+        localStorage.setItem('v6_comboCost', comboCost.toString());
+        localStorage.setItem('v6_rebirths', rebirths.toString());
     }
 
     function updateUI() {
         document.getElementById('scoreLabel').textContent = score.toLocaleString();
         document.getElementById('mainButton').textContent = score.toLocaleString();
-        document.getElementById('pwrVal').textContent = clickPower.toLocaleString();
-        document.getElementById('autoVal').textContent = autoHelpers;
-        document.getElementById('cCost').textContent = "Cost: " + clickCost.toLocaleString();
-        document.getElementById('aCost').textContent = "Cost: " + autoCost.toLocaleString();
-        document.getElementById('crCost').textContent = "Cost: " + critCost.toLocaleString();
-        document.getElementById('mCost').textContent = "Cost: " + shopMultCost.toLocaleString();
+        document.getElementById('pwrVal').textContent = clickPwr.toLocaleString();
+        document.getElementById('shopMultVal').textContent = globalMult.toFixed(1) + "x";
+        document.getElementById('critChanceVal').textContent = critC;
+        document.getElementById('critDmgVal').textContent = critD;
+        document.getElementById('comboVal').textContent = "x" + comboBonus.toFixed(1);
         document.getElementById('rebirthBtn').textContent = `Rebirth (${rebirths})`;
 
-        // --- ZOOM LOGIC ---
-        let scale = 1.0;
-        const scoreStr = score.toString();
-        if (scoreStr.length > 12) scale = 0.9;
-        if (scoreStr.length > 20) scale = 0.8;
-        if (scoreStr.length > 30) scale = 0.7;
-        document.getElementById('gameWrapper').style.transform = `scale(${scale})`;
+        // Shop Costs
+        document.getElementById('cCost').textContent = `Cost: ${clickCost.toLocaleString()}`;
+        document.getElementById('aCost').textContent = `Cost: ${autoCost.toLocaleString()}`;
+        document.getElementById('effCost').textContent = `Cost: ${effCost.toLocaleString()} (${Math.round(helperEff*100)}%)`;
+        document.getElementById('crCost').textContent = `Cost: ${critCCost.toLocaleString()}`;
+        document.getElementById('cdCost').textContent = `Cost: ${critDCost.toLocaleString()}`;
+        document.getElementById('mCost').textContent = `Cost: ${multCost.toLocaleString()}`;
+        document.getElementById('clCost').textContent = `Cost: ${cloverCost.toLocaleString()}`;
+        document.getElementById('coCost').textContent = `Cost: ${comboCost.toLocaleString()}`;
 
-        // --- PROGRESS & WORLD LOGIC ---
+        // Dynamic Zoom
+        let z = 1.0;
+        const len = score.toString().length;
+        if(len > 15) z = 0.85; if(len > 25) z = 0.75;
+        document.getElementById('gameWrapper').style.transform = `scale(${z})`;
+
+        // World/Progress
         let idx = 0;
         for(let i=WORLDS.length-1; i>=0; i--) { if(score >= WORLDS[i].min) { idx = i; break; } }
-        
         document.body.style.backgroundImage = `url('${WORLDS[idx].bg}')`;
-        const btn = document.getElementById('mainButton');
-        if(WORLDS[idx].skin !== 'none') btn.style.backgroundImage = `url('${WORLDS[idx].skin}')`;
-        else btn.style.backgroundImage = 'none';
-
         const next = WORLDS[idx+1];
         if(next) {
             const pct = Number(((score - WORLDS[idx].min) * 1000n) / (next.min - WORLDS[idx].min)) / 10;
@@ -189,27 +238,11 @@
             document.getElementById('levelText').textContent = `${WORLDS[idx].name} -> ${pct.toFixed(1)}%`;
         } else {
             document.getElementById('progressBar').style.width = "100%";
-            document.getElementById('levelText').textContent = "THE ENDLESS VOID";
+            document.getElementById('levelText').textContent = "OMEGA REALM";
         }
     }
 
-    function spawnLucky() {
-        const c = document.createElement('div');
-        c.className = 'clover'; c.innerHTML = '🍀';
-        c.style.left = Math.random() * 80 + 10 + "%";
-        c.style.top = Math.random() * 80 + 10 + "%";
-        document.body.appendChild(c);
-        c.onclick = () => {
-            const bonus = score / 10n + 1000n;
-            score += bonus;
-            createParticle(window.innerWidth/2, window.innerHeight/2, "LUCKY +" + bonus.toLocaleString(), "#gold");
-            c.remove();
-            updateUI();
-        };
-        setTimeout(() => { if(c.parentNode) c.remove(); }, 5000);
-    }
-
-    function createParticle(x, y, txt, col) {
+    function createP(x, y, txt, col) {
         const p = document.createElement('div');
         p.className = 'p'; p.textContent = txt;
         p.style.left = x + 'px'; p.style.top = y + 'px'; p.style.color = col || "white";
@@ -220,81 +253,90 @@
     function doClick(e) {
         if(e) e.preventDefault();
         
-        // Dynamic Power Calculation
-        let isCrit = (Math.random() * 100) < critChance;
-        let gain = BigInt(Math.floor(Math.random() * Number(clickPower))) + 1n;
-        if(isCrit) gain *= 10n;
-        gain = BigInt(Math.floor(Number(gain) * shopMult * (rebirths + 1)));
-
-        score += gain;
-        clickHistory.push(Date.now());
-
-        // Visuals/Sound
+        // Audio & Shake
         sndClick.currentTime = 0; sndClick.play().catch(()=>{});
         if(score >= WORLDS[WORLDS.length-1].min) { sndOi.currentTime = 0; sndOi.play().catch(()=>{}); }
-        
-        document.body.classList.add('shake');
-        setTimeout(() => document.body.classList.remove('shake'), 100);
+        document.body.classList.remove('shake'); void document.body.offsetWidth; document.body.classList.add('shake');
 
-        const x = e ? e.clientX : window.innerWidth / 2;
-        const y = e ? e.clientY : window.innerHeight / 2;
-        createParticle(x, y, (isCrit?"🔥":"+")+gain.toLocaleString(), isCrit?"#ff9800":"white");
+        // Combo Logic
+        comboMeter = Math.min(100, comboMeter + 4);
+        comboBonus = 1.0 + (comboMeter / 40); // Max 3.5x bonus
+
+        // Gain Calc
+        let isCrit = (Math.random() * 100) < critC;
+        let gain = BigInt(Math.floor(Math.random() * Number(clickPwr))) + 1n;
+        if(isCrit) gain *= BigInt(critD);
+        gain = BigInt(Math.floor(Number(gain) * globalMult * (rebirths + 1) * comboBonus));
+
+        score += gain;
+        const x = e ? (e.clientX || window.innerWidth/2) : window.innerWidth/2;
+        const y = e ? (e.clientY || window.innerHeight/2) : window.innerHeight/2;
+        createP(x, y, (isCrit?"🔥":"+")+gain.toLocaleString(), isCrit?"#ff9800":"white");
         
         updateUI(); save();
     }
 
-    function buyUpgrade(type) {
-        if(type === 'click' && score >= clickCost) {
-            score -= clickCost; clickPower = BigInt(Math.floor(Number(clickPower) * 2.8));
-            clickCost = BigInt(Math.floor(Number(clickCost) * 3));
-        }
-        if(type === 'auto' && score >= autoCost) {
-            score -= autoCost; autoHelpers++;
-            autoCost = BigInt(Math.floor(Number(autoCost) * 2.5));
-        }
-        if(type === 'crit' && score >= critCost && critChance < 100) {
-            score -= critCost; critChance += 3; critCost *= 6n;
-        }
-        if(type === 'mult' && score >= shopMultCost) {
-            score -= shopMultCost; shopMult *= 1.8; shopMultCost *= 10n;
-        }
+    function buy(t) {
+        if(t==='click' && score>=clickCost) { score-=clickCost; clickPwr=BigInt(Math.floor(Number(clickPwr)*2.8)); clickCost=BigInt(Math.floor(Number(clickCost)*3)); }
+        if(t==='auto' && score>=autoCost) { score-=autoCost; autoBots++; autoCost=BigInt(Math.floor(Number(autoCost)*2.5)); }
+        if(t==='eff' && score>=effCost) { score-=effCost; helperEff+=0.2; effCost*=8n; }
+        if(t==='critC' && score>=critCCost && critC<100) { score-=critCCost; critC+=3; critCCost*=6n; }
+        if(t==='critD' && score>=critDCost) { score-=critDCost; critD+=5; critDCost*=10n; }
+        if(t==='mult' && score>=multCost) { score-=multCost; globalMult*=1.7; multCost*=12n; }
+        if(t==='clover' && score>=cloverCost) { score-=cloverCost; cloverRate=Math.max(5000, cloverRate-5000); cloverCost*=15n; setupClover(); }
+        if(t==='combo' && score>=comboCost) { score-=comboCost; comboDecay=Math.max(0.2, comboDecay-0.3); comboCost*=10n; }
         updateUI(); save();
+    }
+
+    function spawnClover() {
+        const c = document.createElement('div');
+        c.className = 'clover'; c.innerHTML = '🍀';
+        c.style.left = Math.random()*80 + 10 + "%"; c.style.top = Math.random()*80 + 10 + "%";
+        document.body.appendChild(c);
+        c.onclick = () => {
+            const b = score / 8n + 5000n; score += b;
+            createP(window.innerWidth/2, window.innerHeight/2, "LUCKY +" + b.toLocaleString(), "gold");
+            c.remove(); updateUI();
+        };
+        setTimeout(() => { if(c.parentNode) c.remove(); }, 6000);
+    }
+
+    let cloverInterval;
+    function setupClover() {
+        if(cloverInterval) clearInterval(cloverInterval);
+        cloverInterval = setInterval(spawnClover, cloverRate);
     }
 
     document.getElementById('rebirthBtn').onclick = () => {
         const goal = 100_000_000_000n;
         if(score >= goal) {
-            if(confirm("REBIRTH? Reset everything for a PERMANENT 2x Power boost!")){
-                rebirths++; score=0n; clickPower=5n; clickCost=250n; autoHelpers=0;
-                autoCost=500n; critChance=10; shopMult=1.0; save(); location.reload();
+            if(confirm("REBIRTH? Reset for a PERMANENT 2x boost?")){
+                rebirths++; score=0n; clickPwr=5n; clickCost=250n; autoBots=0;
+                autoCost=500n; critC=10; critD=10; globalMult=1.0; save(); location.reload();
             }
-        } else alert("You need 100 Billion to Rebirth!");
+        } else alert("Need 100 Billion to Rebirth!");
     };
 
     // --- LOOPS ---
     setInterval(() => {
-        if(autoHelpers > 0) {
-            // Auto Clickers now use 50% of your click power per helper
-            let autoGain = (clickPower * BigInt(autoHelpers)) / 2n;
-            autoGain = BigInt(Math.floor(Number(autoGain) * shopMult * (rebirths + 1)));
-            score += autoGain;
+        // Auto Gain
+        if(autoBots > 0) {
+            let aGain = BigInt(Math.floor(Number(clickPwr) * autoBots * helperEff));
+            aGain = BigInt(Math.floor(Number(aGain) * globalMult * (rebirths + 1)));
+            score += aGain;
             updateUI(); 
         }
+        // Combo Decay
+        comboMeter = Math.max(0, comboMeter - comboDecay);
+        comboBonus = 1.0 + (comboMeter / 40);
+        document.getElementById('comboBar').style.width = comboMeter + "%";
     }, 1000);
 
-    setInterval(() => {
-        const now = Date.now();
-        clickHistory = clickHistory.filter(t => now - t <= 1000);
-        document.getElementById('cpsVal').textContent = clickHistory.length;
-    }, 100);
-
-    setInterval(spawnLucky, 30000); // Lucky Clover every 30s
-
-    // Events
+    // Initial Setup
     document.getElementById('mainButton').onmousedown = doClick;
     window.onkeyup = (e) => { if([' ','Enter'].includes(e.key)) doClick(); };
-    document.getElementById('resetBtn').onclick = () => { if(confirm("Wipe Progress?")) { localStorage.clear(); location.reload(); }};
-
+    document.getElementById('resetBtn').onclick = () => { if(confirm("Soft Reset?")) { localStorage.clear(); location.reload(); }};
+    setupClover();
     updateUI();
 </script>
 </body>
