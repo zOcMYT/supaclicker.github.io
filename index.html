@@ -3,311 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supa Clicker</title>
+    <title>Supa Clicker: Infinity</title>
     <link rel="icon" href="https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/ButtonIcon.png">
 
     <style>
         :root {
-            --default-bg-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s');
-            --level1-bg-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvD90oZ0SLUt9Hizd90BlaEeI4BtMrHiO1HA&s');
-            --level2-bg-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s');
-            --level3-bg-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg95X8tdImD1AZZ0dEnSCZdEx3t3iWyXwqsA&s');
-            --level4-bg-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9-ANfPq_7ESF0UHnzM6s3HLaSHie6F140Q&s');
-            --ui-overlay-bg: rgba(0, 0, 0, 0.9);
+            --ui-bg: rgba(0, 0, 0, 0.92);
+            --neon-blue: #00f2ff;
         }
 
         body {
-            background: black var(--default-bg-image) no-repeat center center fixed;
+            background: black no-repeat center center fixed;
             background-size: cover;
             margin: 0; overflow: hidden;
             font-family: 'Marker Felt', fantasy; color: white;
             height: 100vh; width: 100vw;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: background-image 0.8s ease-in-out;
+            display: flex; justify-content: center; align-items: center;
+            transition: background-image 1s ease-in-out;
             user-select: none;
         }
 
-        /* Screen Shake Effect */
-        .shake { animation: shakeAnim 0.1s linear; }
-        @keyframes shakeAnim {
-            0% { transform: translate(1px, 1px); }
-            50% { transform: translate(-2px, -1px); }
-            100% { transform: translate(1px, 1px); }
+        /* Dynamic Zoom Wrapper */
+        #gameWrapper {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 100%; height: 100%;
         }
 
-        /* Top Bar */
+        /* Top Info Bar */
         #topBar {
-            position: absolute; top: 0; width: 100%; height: 90px;
-            background: var(--ui-overlay-bg); border-bottom: 3px solid white;
+            position: absolute; top: 0; width: 100%; height: 80px;
+            background: var(--ui-bg); border-bottom: 2px solid white;
             display: flex; justify-content: space-around; align-items: center; z-index: 100;
         }
 
+        /* Progress Bar */
         #progessContainer { 
-            width: 35%; height: 25px; background: #222; 
-            border: 2px solid white; border-radius: 12px; 
-            position: relative; overflow: hidden; 
+            width: 300px; height: 20px; background: #222; 
+            border: 2px solid white; border-radius: 10px; position: relative; overflow: hidden; 
         }
-        #progressBar { width: 0%; height: 100%; background: linear-gradient(90deg, #4caf50, #8bc34a, #ffeb3b); transition: width 0.2s; }
-        #levelText { position: absolute; width: 100%; text-align: center; top: 2px; font-size: 1rem; text-shadow: 1px 1px 2px black; font-weight: bold; }
+        #progressBar { width: 0%; height: 100%; background: linear-gradient(90deg, #00ff88, #00f2ff); transition: width 0.3s; }
+        #levelText { position: absolute; width:100%; text-align:center; font-size: 0.8rem; top: 2px; text-shadow: 1px 1px black; }
 
-        /* Combo Bar */
-        #comboBarContainer {
-            position: absolute; bottom: 120px; width: 250px; height: 15px;
-            background: #333; border: 2px solid white; border-radius: 10px; overflow: hidden;
-        }
-        #comboBar { width: 0%; height: 100%; background: #00e5ff; transition: width 0.1s linear; }
+        /* Side Panels */
+        #statsUI { position: absolute; left: 20px; bottom: 20px; background: var(--ui-bg); padding: 15px; border: 2px solid white; border-radius: 12px; min-width: 180px; }
+        #shopUI { position: absolute; right: 20px; top: 100px; bottom: 20px; width: 280px; background: var(--ui-bg); padding: 15px; border: 2px solid white; border-radius: 12px; overflow-y: auto; }
 
-        /* Stats & Shop */
-        #statsContainer {
-            position: absolute; left: 20px; bottom: 20px;
-            background: var(--ui-overlay-bg); padding: 15px; border-radius: 15px;
-            border: 2px solid white; z-index: 100; min-width: 200px;
-        }
+        .shop-item { background: rgba(255,255,255,0.05); padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; cursor: pointer; }
+        .shop-item:hover { background: rgba(255,255,255,0.1); transform: translateX(-5px); }
+        .shop-item b { color: #00f2ff; display: block; }
 
-        #shopContainer {
-            position: absolute; right: 20px; top: 110px; bottom: 20px;
-            width: 280px; background: var(--ui-overlay-bg); padding: 15px;
-            border-radius: 15px; border: 2px solid white; z-index: 100;
-            display: flex; flex-direction: column; gap: 10px; overflow-y: auto;
-        }
-
-        .shop-item {
-            background: rgba(255,255,255,0.08); padding: 12px; border-radius: 10px;
-            border: 1px solid #666; cursor: pointer; transition: 0.2s;
-        }
-        .shop-item:hover:not(.disabled) { background: rgba(255,255,255,0.15); transform: scale(1.02); }
-        .shop-item b { color: #ffeb3b; }
-        .disabled { opacity: 0.5; cursor: not-allowed; }
-
-        /* Main Component */
+        /* Main Game Button */
         #mainButton {
-            width: 300px; height: 300px; font-size: 2.2rem; 
+            width: 320px; height: 320px; font-size: 2.5rem; 
             border: 10px solid white; border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
             cursor: pointer; position: relative; text-align: center;
-            background: rgba(0,0,0,0.4); box-shadow: 0 0 30px rgba(255,255,255,0.2);
-            transition: transform 0.05s; z-index: 10;
+            background: rgba(0,0,0,0.6) center/cover;
+            box-shadow: 0 0 40px rgba(0, 242, 255, 0.3);
+            transition: transform 0.05s, box-shadow 0.2s;
         }
-        #mainButton:active { transform: scale(0.9); }
+        #mainButton:active { transform: scale(0.92); }
 
-        .rainbow-strobe { animation: borderRainbow 4s linear infinite; }
-        @keyframes borderRainbow {
-            0% {border-color: red;} 20% {border-color: yellow;} 40% {border-color: green;}
-            60% {border-color: cyan;} 80% {border-color: magenta;} 100% {border-color: red;}
+        /* Lucky Clover Spawn */
+        .clover {
+            position: absolute; width: 60px; height: 60px;
+            background: gold; border-radius: 50%; cursor: pointer;
+            box-shadow: 0 0 20px gold; z-index: 500;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; animation: pulse 1s infinite alternate;
         }
 
-        /* Floating Text */
-        .particle {
-            position: fixed; pointer-events: none;
-            font-size: 2.2rem; font-weight: bold; text-shadow: 2px 2px 4px black;
-            animation: pFloat 0.8s ease-out forwards; z-index: 1000;
-        }
-        @keyframes pFloat {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-160px) rotate(20deg) scale(1.4); opacity: 0; }
-        }
-        .crit-p { color: #ff9800; font-size: 3.2rem; }
+        @keyframes pulse { from {transform: scale(1);} to {transform: scale(1.2);} }
 
-        button#resetBtn { background: #d32f2f; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; }
-        #rebirthBtn { background: #6200ea; color: white; border: 2px solid white; padding: 10px; cursor: pointer; border-radius: 8px; font-weight: bold; }
+        /* Floating Particles */
+        .p { position: fixed; pointer-events: none; font-weight: bold; animation: pMove 0.8s forwards; z-index: 1000; }
+        @keyframes pMove { 0% {opacity:1; transform:translateY(0);} 100% {opacity:0; transform:translateY(-150px) scale(1.5);} }
+
+        .shake { animation: shake 0.1s linear; }
+        @keyframes shake { 0%{margin-left:0} 25%{margin-left:5px} 50%{margin-left:-5px} 75%{margin-left:5px} 100%{margin-left:0} }
+
+        #rebirthBtn { background: #6200ea; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        #resetBtn { background: #ff1744; border: none; padding: 5px 10px; color: white; cursor: pointer; border-radius: 4px; }
     </style>
 </head>
 <body>
 
+<div id="gameWrapper">
     <div id="topBar">
         <div id="progessContainer">
             <div id="progressBar"></div>
-            <div id="levelText">Level: Loading...</div>
+            <div id="levelText">World: Loading...</div>
         </div>
         <button id="rebirthBtn">Rebirth (0)</button>
-        <button id="resetBtn">Reset</button>
+        <button id="resetBtn">Soft Reset</button>
     </div>
 
-    <div id="statsContainer">
-        <div id="scoreDisplay" style="font-size: 1.8rem; color: #ffeb3b; margin-bottom: 5px;">0</div>
-        <div><b>Multiplier:</b> <span id="multVal">1x</span></div>
+    <div id="statsUI">
+        <div id="scoreLabel" style="font-size: 2rem; color: #00f2ff; margin-bottom: 5px;">0</div>
         <div><b>CPS:</b> <span id="cpsVal">0</span></div>
-        <div><b>Auto-CPS:</b> <span id="autoVal">0</span></div>
-        <div id="comboDisplay" style="color: #00e5ff; font-weight: bold; font-size: 1.2rem;">Combo x1.0</div>
+        <div><b>Manual Power:</b> <span id="pwrVal">5</span></div>
+        <div><b>Auto-Help:</b> <span id="autoVal">0</span></div>
     </div>
 
-    <div id="comboBarContainer">
-        <div id="comboBar"></div>
+    <div id="shopUI">
+        <h3 style="text-align: center; margin-top: 5px;">SUPER SHOP</h3>
+        <div class="shop-item" onclick="buyUpgrade('click')"><b>Manual Buff</b><span id="cCost">Cost: 250</span></div>
+        <div class="shop-item" onclick="buyUpgrade('auto')"><b>Helper Bot</b><span id="aCost">Cost: 500</span></div>
+        <div class="shop-item" onclick="buyUpgrade('crit')"><b>Crit Sync</b><span id="crCost">Cost: 2.5k</span></div>
+        <div class="shop-item" onclick="buyUpgrade('mult')"><b>Mega Multi</b><span id="mCost">Cost: 10k</span></div>
     </div>
 
-    <div id="shopContainer">
-        <h2 style="margin: 0; text-align: center;">SHOP</h2>
-        <div class="shop-item" id="buyClick"><b>Manual Power</b><br><span id="clickCost">250</span></div>
-        <div class="shop-item" id="buyAuto"><b>Helper Bot</b><br><span id="autoCost">500</span></div>
-        <div class="shop-item" id="buyCrit"><b>Crit Chance</b><br><span id="critCost">2,500</span></div>
-        <div class="shop-item" id="buyMult"><b>Super Multi</b><br><span id="mCost">10,000</span></div>
-    </div>
+    <div id="mainButton">0</div>
+</div>
 
-    <div id="mainButton" class="rainbow-strobe">0</div>
+<script>
+    // --- DATA ---
+    let score = BigInt(localStorage.getItem('v5_score') || "0");
+    let clickPower = BigInt(localStorage.getItem('v5_pwr') || "5");
+    let clickCost = BigInt(localStorage.getItem('v5_cCost') || "250");
+    let autoHelpers = parseInt(localStorage.getItem('v5_auto') || "0");
+    let autoCost = BigInt(localStorage.getItem('v5_aCost') || "500");
+    let critChance = parseInt(localStorage.getItem('v5_crit') || "10");
+    let critCost = BigInt(localStorage.getItem('v5_critCost') || "2500");
+    let shopMult = parseFloat(localStorage.getItem('v5_mult') || "1.0");
+    let shopMultCost = BigInt(localStorage.getItem('v5_mCost') || "10000");
+    let rebirths = parseInt(localStorage.getItem('v5_rebirths') || "0");
 
-    <script>
-        // --- GAME STATE ---
-        let score = BigInt(localStorage.getItem('v4_score') || "0");
-        let clickPower = BigInt(localStorage.getItem('v4_pwr') || "5");
-        let clickCost = BigInt(localStorage.getItem('v4_cCost') || "250");
-        let autoCPS = parseInt(localStorage.getItem('v4_auto') || "0");
-        let autoCost = BigInt(localStorage.getItem('v4_aCost') || "500");
-        let critChance = parseInt(localStorage.getItem('v4_critC') || "10"); 
-        let critCost = BigInt(localStorage.getItem('v4_critCost') || "2500");
-        let shopMult = parseFloat(localStorage.getItem('v4_mult') || "1.0");
-        let shopMultCost = BigInt(localStorage.getItem('v4_mCost') || "10000");
-        let rebirths = parseInt(localStorage.getItem('v4_rebirths') || "0");
+    let clickHistory = [];
+    const sndClick = new Audio("https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/Mouseclick.wav");
+    const sndOi = new Audio("https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/oi%20oi%20oe%20oi%20a%20eye%20eye.mp3");
+
+    const WORLDS = [
+        { name: "Earth", min: 0n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s', skin: 'https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/ButtonIcon.png' },
+        { name: "Orbit", min: 1_000_000n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvD90oZ0SLUt9Hizd90BlaEeI4BtMrHiO1HA&s', skin: 'none' },
+        { name: "Galaxy", min: 1_000_000_000_000n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s', skin: 'none' },
+        { name: "Reality", min: 1_000_000_000_000_000_000n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9-ANfPq_7ESF0UHnzM6s3HLaSHie6F140Q&s', skin: 'none' }
+    ];
+
+    function save() {
+        localStorage.setItem('v5_score', score.toString());
+        localStorage.setItem('v5_pwr', clickPower.toString());
+        localStorage.setItem('v5_cCost', clickCost.toString());
+        localStorage.setItem('v5_auto', autoHelpers.toString());
+        localStorage.setItem('v5_aCost', autoCost.toString());
+        localStorage.setItem('v5_crit', critChance.toString());
+        localStorage.setItem('v5_critCost', critCost.toString());
+        localStorage.setItem('v5_mult', shopMult.toString());
+        localStorage.setItem('v5_mCost', shopMultCost.toString());
+        localStorage.setItem('v5_rebirths', rebirths.toString());
+    }
+
+    function updateUI() {
+        document.getElementById('scoreLabel').textContent = score.toLocaleString();
+        document.getElementById('mainButton').textContent = score.toLocaleString();
+        document.getElementById('pwrVal').textContent = clickPower.toLocaleString();
+        document.getElementById('autoVal').textContent = autoHelpers;
+        document.getElementById('cCost').textContent = "Cost: " + clickCost.toLocaleString();
+        document.getElementById('aCost').textContent = "Cost: " + autoCost.toLocaleString();
+        document.getElementById('crCost').textContent = "Cost: " + critCost.toLocaleString();
+        document.getElementById('mCost').textContent = "Cost: " + shopMultCost.toLocaleString();
+        document.getElementById('rebirthBtn').textContent = `Rebirth (${rebirths})`;
+
+        // --- ZOOM LOGIC ---
+        let scale = 1.0;
+        const scoreStr = score.toString();
+        if (scoreStr.length > 12) scale = 0.9;
+        if (scoreStr.length > 20) scale = 0.8;
+        if (scoreStr.length > 30) scale = 0.7;
+        document.getElementById('gameWrapper').style.transform = `scale(${scale})`;
+
+        // --- PROGRESS & WORLD LOGIC ---
+        let idx = 0;
+        for(let i=WORLDS.length-1; i>=0; i--) { if(score >= WORLDS[i].min) { idx = i; break; } }
         
-        // Combo Mechanics
-        let comboMeter = 0;
-        let comboBonus = 1.0;
-        let clicks = [];
+        document.body.style.backgroundImage = `url('${WORLDS[idx].bg}')`;
+        const btn = document.getElementById('mainButton');
+        if(WORLDS[idx].skin !== 'none') btn.style.backgroundImage = `url('${WORLDS[idx].skin}')`;
+        else btn.style.backgroundImage = 'none';
 
-        // --- AUDIO (Fixed URLs) ---
-        const sndClick = new Audio("https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/Mouseclick.wav");
-        const sndOi = new Audio("https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/oi%20oi%20oe%20oi%20a%20eye%20eye.mp3");
-
-        const WORLDS = [
-            { name: "Starter", min: 0n, bg: 'var(--default-bg-image)' },
-            { name: "Novice", min: 50_000n, bg: 'var(--default-bg-image)' },
-            { name: "Expert", min: 5_000_000n, bg: 'var(--level1-bg-image)' },
-            { name: "Godly", min: 1_000_000_000_000_000_000n, bg: 'var(--level4-bg-image)' }
-        ];
-
-        function save() {
-            localStorage.setItem('v4_score', score.toString());
-            localStorage.setItem('v4_pwr', clickPower.toString());
-            localStorage.setItem('v4_cCost', clickCost.toString());
-            localStorage.setItem('v4_auto', autoCPS.toString());
-            localStorage.setItem('v4_aCost', autoCost.toString());
-            localStorage.setItem('v4_critC', critChance.toString());
-            localStorage.setItem('v4_critCost', critCost.toString());
-            localStorage.setItem('v4_mult', shopMult.toString());
-            localStorage.setItem('v4_mCost', shopMultCost.toString());
-            localStorage.setItem('v4_rebirths', rebirths.toString());
+        const next = WORLDS[idx+1];
+        if(next) {
+            const pct = Number(((score - WORLDS[idx].min) * 1000n) / (next.min - WORLDS[idx].min)) / 10;
+            document.getElementById('progressBar').style.width = pct + "%";
+            document.getElementById('levelText').textContent = `${WORLDS[idx].name} -> ${pct.toFixed(1)}%`;
+        } else {
+            document.getElementById('progressBar').style.width = "100%";
+            document.getElementById('levelText').textContent = "THE ENDLESS VOID";
         }
+    }
 
-        function createP(x, y, txt, ist) {
-            const d = document.createElement('div');
-            d.className = `particle ${ist ? 'crit-p' : ''}`;
-            d.innerHTML = ist ? `🔥 ${txt}` : `+${txt}`;
-            d.style.left = x + 'px'; d.style.top = y + 'px';
-            document.body.appendChild(d);
-            setTimeout(() => d.remove(), 800);
-        }
-
-        function updateUI() {
-            const totalMult = shopMult * (rebirths + 1) * comboBonus;
-            
-            document.getElementById('scoreDisplay').textContent = score.toLocaleString();
-            document.getElementById('mainButton').textContent = score.toLocaleString();
-            document.getElementById('clickCost').textContent = "Cost: " + clickCost.toLocaleString();
-            document.getElementById('autoCost').textContent = "Cost: " + autoCost.toLocaleString();
-            document.getElementById('critCost').textContent = "Cost: " + critCost.toLocaleString();
-            document.getElementById('mCost').textContent = "Cost: " + shopMultCost.toLocaleString();
-            document.getElementById('multVal').textContent = totalMult.toFixed(1) + "x";
-            document.getElementById('autoVal').textContent = autoCPS;
-            document.getElementById('rebirthBtn').textContent = `Rebirth (${rebirths})`;
-            document.getElementById('comboDisplay').textContent = "Combo x" + comboBonus.toFixed(1);
-
-            // Progress Bar
-            let curIdx = 0;
-            for(let i=WORLDS.length-1; i>=0; i--) {
-                if(score >= WORLDS[i].min) { curIdx = i; break; }
-            }
-            document.body.style.backgroundImage = WORLDS[curIdx].bg;
-            const next = WORLDS[curIdx + 1];
-            if(next) {
-                const pct = Number(((score - WORLDS[curIdx].min) * 1000n) / (next.min - WORLDS[curIdx].min)) / 10;
-                document.getElementById('progressBar').style.width = pct + "%";
-                document.getElementById('levelText').textContent = `${WORLDS[curIdx].name} (${pct.toFixed(1)}%)`;
-            } else {
-                document.getElementById('progressBar').style.width = "100%";
-                document.getElementById('levelText').textContent = "ULTIMATE WORLD";
-            }
-        }
-
-        function triggerClick(e) {
-            if(e) e.preventDefault();
-            
-            // Audio Logic (Rapidity fixed)
-            if(score >= WORLDS[WORLDS.length-1].min) {
-                sndOi.currentTime = 0; sndOi.play().catch(()=>{});
-            } else {
-                sndClick.currentTime = 0; sndClick.play().catch(()=>{});
-            }
-
-            // Screen Shake
-            document.body.classList.remove('shake');
-            void document.body.offsetWidth; // Trigger reflow
-            document.body.classList.add('shake');
-
-            // Combo Logic
-            comboMeter = Math.min(100, comboMeter + 5);
-            comboBonus = 1.0 + (comboMeter / 50); // Max 3x bonus
-
-            // Calculation
-            let isCrit = (Math.random() * 100) < critChance;
-            let gain = BigInt(Math.floor(Math.random() * Number(clickPower))) + 1n;
-            if(isCrit) gain *= 10n;
-            gain = BigInt(Math.floor(Number(gain) * shopMult * (rebirths + 1) * comboBonus));
-
-            score += gain;
-            clicks.push(Date.now());
-            
-            const x = e ? e.clientX : window.innerWidth / 2;
-            const y = e ? e.clientY : window.innerHeight / 2;
-            createP(x, y, gain.toLocaleString(), isCrit);
-
-            updateUI(); save();
-        }
-
-        // --- SHOP & REBIRTH ---
-        document.getElementById('rebirthBtn').onclick = () => {
-            const rebirthGoal = BigInt(10_000_000_000);
-            if(score >= rebirthGoal) {
-                if(confirm("Rebirth? You lose all points and upgrades but get a PERMANENT 2x multiplier!")) {
-                    rebirths++;
-                    score = 0n; clickPower = 5n; clickCost = 250n; autoCPS = 0; autoCost = 500n;
-                    critChance = 10; shopMult = 1.0; save(); location.reload();
-                }
-            } else {
-                alert(`You need ${rebirthGoal.toLocaleString()} points to Rebirth!`);
-            }
+    function spawnLucky() {
+        const c = document.createElement('div');
+        c.className = 'clover'; c.innerHTML = '🍀';
+        c.style.left = Math.random() * 80 + 10 + "%";
+        c.style.top = Math.random() * 80 + 10 + "%";
+        document.body.appendChild(c);
+        c.onclick = () => {
+            const bonus = score / 10n + 1000n;
+            score += bonus;
+            createParticle(window.innerWidth/2, window.innerHeight/2, "LUCKY +" + bonus.toLocaleString(), "#gold");
+            c.remove();
+            updateUI();
         };
+        setTimeout(() => { if(c.parentNode) c.remove(); }, 5000);
+    }
 
-        document.getElementById('buyClick').onclick = () => { if(score >= clickCost) { score -= clickCost; clickPower = BigInt(Math.floor(Number(clickPower) * 2.8)); clickCost = BigInt(Math.floor(Number(clickCost) * 3)); updateUI(); save(); } };
-        document.getElementById('buyAuto').onclick = () => { if(score >= autoCost) { score -= autoCost; autoCPS++; autoCost = BigInt(Math.floor(Number(autoCost) * 2.2)); updateUI(); save(); } };
-        document.getElementById('buyCrit').onclick = () => { if(score >= critCost && critChance < 100) { score -= critCost; critChance += 3; critCost *= 5n; updateUI(); save(); } };
-        document.getElementById('buyMult').onclick = () => { if(score >= shopMultCost) { score -= shopMultCost; shopMult *= 1.6; shopMultCost *= 8n; updateUI(); save(); } };
+    function createParticle(x, y, txt, col) {
+        const p = document.createElement('div');
+        p.className = 'p'; p.textContent = txt;
+        p.style.left = x + 'px'; p.style.top = y + 'px'; p.style.color = col || "white";
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 800);
+    }
 
-        // --- LOOPS ---
-        setInterval(() => {
-            // Combo Decay
-            comboMeter = Math.max(0, comboMeter - 2);
-            comboBonus = 1.0 + (comboMeter / 50);
-            document.getElementById('comboBar').style.width = comboMeter + "%";
+    function doClick(e) {
+        if(e) e.preventDefault();
+        
+        // Dynamic Power Calculation
+        let isCrit = (Math.random() * 100) < critChance;
+        let gain = BigInt(Math.floor(Math.random() * Number(clickPower))) + 1n;
+        if(isCrit) gain *= 10n;
+        gain = BigInt(Math.floor(Number(gain) * shopMult * (rebirths + 1)));
 
-            // Auto Clicker
-            if(autoCPS > 0) {
-                score += BigInt(Math.floor(autoCPS * shopMult * (rebirths + 1)));
-                updateUI(); save();
+        score += gain;
+        clickHistory.push(Date.now());
+
+        // Visuals/Sound
+        sndClick.currentTime = 0; sndClick.play().catch(()=>{});
+        if(score >= WORLDS[WORLDS.length-1].min) { sndOi.currentTime = 0; sndOi.play().catch(()=>{}); }
+        
+        document.body.classList.add('shake');
+        setTimeout(() => document.body.classList.remove('shake'), 100);
+
+        const x = e ? e.clientX : window.innerWidth / 2;
+        const y = e ? e.clientY : window.innerHeight / 2;
+        createParticle(x, y, (isCrit?"🔥":"+")+gain.toLocaleString(), isCrit?"#ff9800":"white");
+        
+        updateUI(); save();
+    }
+
+    function buyUpgrade(type) {
+        if(type === 'click' && score >= clickCost) {
+            score -= clickCost; clickPower = BigInt(Math.floor(Number(clickPower) * 2.8));
+            clickCost = BigInt(Math.floor(Number(clickCost) * 3));
+        }
+        if(type === 'auto' && score >= autoCost) {
+            score -= autoCost; autoHelpers++;
+            autoCost = BigInt(Math.floor(Number(autoCost) * 2.5));
+        }
+        if(type === 'crit' && score >= critCost && critChance < 100) {
+            score -= critCost; critChance += 3; critCost *= 6n;
+        }
+        if(type === 'mult' && score >= shopMultCost) {
+            score -= shopMultCost; shopMult *= 1.8; shopMultCost *= 10n;
+        }
+        updateUI(); save();
+    }
+
+    document.getElementById('rebirthBtn').onclick = () => {
+        const goal = 100_000_000_000n;
+        if(score >= goal) {
+            if(confirm("REBIRTH? Reset everything for a PERMANENT 2x Power boost!")){
+                rebirths++; score=0n; clickPower=5n; clickCost=250n; autoHelpers=0;
+                autoCost=500n; critChance=10; shopMult=1.0; save(); location.reload();
             }
-        }, 1000);
+        } else alert("You need 100 Billion to Rebirth!");
+    };
 
-        setInterval(() => {
-            const now = Date.now();
-            clicks = clicks.filter(t => now - t <= 1000);
-            document.getElementById('cpsVal').textContent = clicks.length;
-        }, 100);
+    // --- LOOPS ---
+    setInterval(() => {
+        if(autoHelpers > 0) {
+            // Auto Clickers now use 50% of your click power per helper
+            let autoGain = (clickPower * BigInt(autoHelpers)) / 2n;
+            autoGain = BigInt(Math.floor(Number(autoGain) * shopMult * (rebirths + 1)));
+            score += autoGain;
+            updateUI(); 
+        }
+    }, 1000);
 
-        // --- EVENTS ---
-        document.getElementById('mainButton').onmousedown = triggerClick;
-        window.onkeyup = (e) => { if (['Enter',' ','Space'].includes(e.key)) triggerClick(); };
-        document.getElementById('resetBtn').onclick = () => { if(confirm("Hard Reset?")) { localStorage.clear(); location.reload(); } }
+    setInterval(() => {
+        const now = Date.now();
+        clickHistory = clickHistory.filter(t => now - t <= 1000);
+        document.getElementById('cpsVal').textContent = clickHistory.length;
+    }, 100);
 
-        updateUI();
-    </script>
+    setInterval(spawnLucky, 30000); // Lucky Clover every 30s
+
+    // Events
+    document.getElementById('mainButton').onmousedown = doClick;
+    window.onkeyup = (e) => { if([' ','Enter'].includes(e.key)) doClick(); };
+    document.getElementById('resetBtn').onclick = () => { if(confirm("Wipe Progress?")) { localStorage.clear(); location.reload(); }};
+
+    updateUI();
+</script>
 </body>
 </html>
-
