@@ -140,6 +140,7 @@
         ];
 
         const clickSound = new Audio("https://github.com/zOcMYT/supaclicker.github.io/raw/main/Mouseclick.wav");
+        const oiSound = new Audio("https://github.com/zOcMYT/supaclicker.github.io/raw/main/oi%20oi%20oe%20oi%20a%20eye%20eye.mp3");
 
         // CREATE BUTTONS
         const mainButton = document.createElement('button');
@@ -197,9 +198,19 @@
             const reward = BigInt(Math.floor(Math.random() * Number(maxClicksPerRandom))) + 1n;
             timesClicked += reward;
             recordPoint(reward);
+            
+            // Check for last level sound
+            const lastLevelThreshold = LEVEL_THRESHOLDS[LEVEL_THRESHOLDS.length - 1].value;
+            if (timesClicked >= lastLevelThreshold) {
+                oiSound.currentTime = 0;
+                oiSound.play().catch(() => {});
+            } else {
+                clickSound.currentTime = 0;
+                clickSound.play().catch(() => {});
+            }
+
             updateVisuals();
             saveGame();
-            clickSound.currentTime = 0; clickSound.play().catch(()=>{});
         }
 
         function doUpgrade() {
@@ -244,16 +255,12 @@
         // ANTI-SPAM KEYBOARD PROTECTION
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ' || e.code === 'Space') {
-                e.preventDefault(); // Stop default browser "click" behavior when focused
+                e.preventDefault();
             }
         });
 
         window.addEventListener('keyup', (e) => {
             if (e.key === 'Enter' || e.key === ' ' || e.code === 'Space') {
-                // If the user was focused on a button, clicking Enter/Space 
-                // normally triggers a click. We blocked that in keydown.
-                // You can manually trigger a click here if you want keyboard support
-                // but only on release (preventing holding down).
                 if (document.activeElement === mainButton) doClick();
                 if (document.activeElement === upgradeButton) doUpgrade();
             }
