@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supa Clicker v1.4.2</title>
+    <title>Supa Clicker v1.5.0 - Infinite Edition</title>
     <link rel="icon" href="https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/ButtonIcon.png">
 
     <style>
         :root {
-            --ui-bg: rgba(0, 0, 0, 0.9);
+            --ui-bg: rgba(0, 0, 0, 0.93);
             --neon-blue: #00f2ff;
-            --neon-purple: #bc13fe;
         }
 
         body {
@@ -23,7 +22,6 @@
             user-select: none;
         }
 
-        /* --- THE RESCALE FIX --- */
         #gameWrapper {
             width: 100vw; height: 100vh;
             display: flex; justify-content: center; align-items: center;
@@ -31,17 +29,12 @@
         }
 
         #gameContainer {
-            width: 1600px; /* Virtual Width */
-            height: 900px; /* Virtual Height */
-            position: relative;
-            flex-shrink: 0;
+            width: 1600px; height: 900px;
+            position: relative; flex-shrink: 0;
             transform-origin: center center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        /* --- UI ELEMENTS --- */
         .main-button {
             width: 400px; height: 400px; font-size: 2.8rem; 
             border: 12px solid white; border-radius: 50%;
@@ -107,26 +100,22 @@
         }
         @keyframes particleMove { 0% {opacity:1; transform:translateY(0);} 100% {opacity:0; transform:translateY(-180px) scale(1.5);} }
 
-        /* --- COOKIE POPUP --- */
         #cookieOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); display: flex; justify-content: center;
+            background: rgba(0,0,0,0.95); display: flex; justify-content: center;
             align-items: center; z-index: 5000;
         }
         .cookie-box {
-            background: #111; border: 5px solid white; padding: 40px; border-radius: 30px;
-            text-align: center; max-width: 500px; box-shadow: 0 0 50px rgba(255,255,255,0.2);
+            background: #111; border: 5px solid white; padding: 40px; border-radius: 30px; text-align: center;
         }
         .cookie-btn {
             background: #333; color: white; border: 3px solid white; padding: 15px 30px;
             margin: 15px; cursor: pointer; font-family: inherit; font-size: 1.3rem; border-radius: 12px;
-            transition: 0.2s;
         }
-        .cookie-btn:hover { background: #d32f2f; }
 
-        #comboContainer { width: 100%; height: 12px; background: #333; border-radius: 6px; margin-top: 8px; overflow: hidden; }
         #comboBar { width: 0%; height: 100%; background: #00e5ff; }
-        #rebirthBtn { background: #6200ea; color: white; padding: 12px 25px; border: 2px solid white; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1.1rem; }
+        #comboContainer { width: 100%; height: 12px; background: #333; border-radius: 6px; margin-top: 8px; overflow: hidden; }
+        #rebirthBtn { background: #6200ea; color: white; border: 2px solid white; border-radius: 12px; cursor: pointer; padding: 10px 20px; font-size: 1.1rem; }
         #resetBtn { background: #d32f2f; color: white; border: none; border-radius: 8px; cursor: pointer; padding: 8px 15px; }
     </style>
 </head>
@@ -134,12 +123,10 @@
 
 <div id="cookieOverlay">
     <div class="cookie-box">
-        <h1 style="color: #ffeb3b; margin-top: 0;">Cookie Notice</h1>
-        <p style="font-size: 1.4rem;">Would you like to accept cookies to save your progress locally?</p>
-        <div style="margin-top: 30px;">
-            <button class="cookie-btn" onclick="closeCookies()">Block Cookies</button>
-            <button class="cookie-btn" onclick="closeCookies()">Block Cookies</button>
-        </div>
+        <h1 style="color: #ffeb3b;">Cookies?</h1>
+        <p style="font-size: 1.3rem;">Would you like to accept cookies?</p>
+        <button class="cookie-btn" onclick="closeCookies()">Block Cookies</button>
+        <button class="cookie-btn" onclick="closeCookies()">Block Cookies</button>
     </div>
 </div>
 
@@ -148,7 +135,7 @@
         <div id="topUI">
             <div id="progessContainer">
                 <div id="progressBar"></div>
-                <div id="levelText">Connecting...</div>
+                <div id="levelText">Synchronizing...</div>
             </div>
             <button id="rebirthBtn">Rebirth (0)</button>
             <button id="resetBtn">Full Reset</button>
@@ -183,57 +170,59 @@
 <script>
     function closeCookies() { document.getElementById('cookieOverlay').style.display = 'none'; }
 
-    // --- ENHANCED RESCALE LOGIC ---
+    // --- INFINITE FORMATTER ---
+    function format(n) {
+        let s = n.toString();
+        if (s.length <= 7) return parseInt(s).toLocaleString();
+        // Custom style: 261.99e+38
+        let m = s.substring(0, 3) + "." + s.substring(3, 5);
+        let exp = s.length - 3;
+        return m + "e+" + exp;
+    }
+
+    // --- RESPONSIVE FIX ---
     function handleResize() {
         const container = document.getElementById('gameContainer');
-        const vWidth = 1600;
-        const vHeight = 900;
-        const scaleX = window.innerWidth / vWidth;
-        const scaleY = window.innerHeight / vHeight;
-        const scale = Math.min(scaleX, scaleY); // Scale down to fit smallest dimension
+        const scale = Math.min(window.innerWidth / 1600, window.innerHeight / 900);
         container.style.transform = `scale(${scale})`;
     }
     window.addEventListener('resize', handleResize);
     handleResize();
 
-    // --- NUMBERS ---
-    function format(n) {
-        let num = typeof n === 'bigint' ? Number(n) : n;
-        if (num < 1e6) return Math.floor(num).toLocaleString();
-        return num.toExponential(2).replace('e+', 'e+');
-    }
+    // --- BIGINT MATH UTILS ---
+    // Multipliers are handled as "Precision BigInts" (Val / 1000)
+    const P = 1000n; 
 
-    // --- GAME DATA ---
     const DEFAULTS = {
         score: "0", pwr: "5", costPwr: "250", helpers: 0, costAuto: "500",
-        eff: 0.5, costEff: "5000", critC: 10, costCritC: "2500",
-        critD: 10, costCritD: "25000", multi: 1.0, costMulti: "10000",
-        decay: 2.5, costDecay: "250000", costWarp: "1000000", warp: 1.0, 
-        costVoid: "500000000", voidM: 1.0
+        eff: "500", costEff: "5000", critC: 10, costCritC: "2500",
+        critD: 10, costCritD: "25000", multi: "1000", costMulti: "10000",
+        decay: 2.5, costDecay: "250000", costWarp: "1000000", warp: "1000", 
+        costVoid: "500000000", voidM: "1000"
     };
 
-    let score = BigInt(localStorage.getItem('v9_score') || DEFAULTS.score);
-    let clickPwr = BigInt(localStorage.getItem('v9_pwr') || DEFAULTS.pwr);
-    let costPwr = BigInt(localStorage.getItem('v9_costPwr') || DEFAULTS.costPwr);
-    let helpers = parseInt(localStorage.getItem('v9_helpers') || DEFAULTS.helpers);
-    let costAuto = BigInt(localStorage.getItem('v9_costAuto') || DEFAULTS.costAuto);
-    let helperEff = parseFloat(localStorage.getItem('v9_eff') || DEFAULTS.eff);
-    let costEff = BigInt(localStorage.getItem('v9_costEff') || DEFAULTS.costEff);
-    let critC = parseInt(localStorage.getItem('v9_critC') || DEFAULTS.critC);
-    let costCritC = BigInt(localStorage.getItem('v9_costCritC') || DEFAULTS.costCritC);
-    let critD = parseInt(localStorage.getItem('v9_critD') || DEFAULTS.critD);
-    let costCritD = BigInt(localStorage.getItem('v9_costCritD') || DEFAULTS.costCritD);
-    let globalMult = parseFloat(localStorage.getItem('v9_multi') || DEFAULTS.multi);
-    let costMulti = BigInt(localStorage.getItem('v9_costMulti') || DEFAULTS.costMulti);
-    let rebirths = parseInt(localStorage.getItem('v9_rebirths') || "0");
-    let comboDecay = parseFloat(localStorage.getItem('v9_decay') || DEFAULTS.decay);
-    let costDecay = BigInt(localStorage.getItem('v9_costDecay') || DEFAULTS.costDecay);
-    let costWarp = BigInt(localStorage.getItem('v9_costWarp') || DEFAULTS.costWarp);
-    let warpFactor = parseFloat(localStorage.getItem('v9_warp') || DEFAULTS.warp);
-    let costVoid = BigInt(localStorage.getItem('v9_costVoid') || DEFAULTS.costVoid);
-    let voidMulti = parseFloat(localStorage.getItem('v9_voidM') || DEFAULTS.voidM);
+    let score = BigInt(localStorage.getItem('v10_score') || DEFAULTS.score);
+    let clickPwr = BigInt(localStorage.getItem('v10_pwr') || DEFAULTS.pwr);
+    let costPwr = BigInt(localStorage.getItem('v10_costPwr') || DEFAULTS.costPwr);
+    let helpers = parseInt(localStorage.getItem('v10_helpers') || DEFAULTS.helpers);
+    let costAuto = BigInt(localStorage.getItem('v10_costAuto') || DEFAULTS.costAuto);
+    let helperEff = BigInt(localStorage.getItem('v10_eff') || DEFAULTS.eff);
+    let costEff = BigInt(localStorage.getItem('v10_costEff') || DEFAULTS.costEff);
+    let critC = parseInt(localStorage.getItem('v10_critC') || DEFAULTS.critC);
+    let costCritC = BigInt(localStorage.getItem('v10_costCritC') || DEFAULTS.costCritC);
+    let critD = parseInt(localStorage.getItem('v10_critD') || DEFAULTS.critD);
+    let costCritD = BigInt(localStorage.getItem('v10_costCritD') || DEFAULTS.costCritD);
+    let globalMult = BigInt(localStorage.getItem('v10_multi') || DEFAULTS.multi);
+    let costMulti = BigInt(localStorage.getItem('v10_costMulti') || DEFAULTS.costMulti);
+    let rebirths = parseInt(localStorage.getItem('v10_rebirths') || "0");
+    let comboDecay = parseFloat(localStorage.getItem('v10_decay') || DEFAULTS.decay);
+    let costDecay = BigInt(localStorage.getItem('v10_costDecay') || DEFAULTS.costDecay);
+    let costWarp = BigInt(localStorage.getItem('v10_costWarp') || DEFAULTS.costWarp);
+    let warpFactor = BigInt(localStorage.getItem('v10_warp') || DEFAULTS.warp);
+    let costVoid = BigInt(localStorage.getItem('v10_costVoid') || DEFAULTS.costVoid);
+    let voidMulti = BigInt(localStorage.getItem('v10_voidM') || DEFAULTS.voidM);
 
-    let combo = 0, comboMult = 1.0;
+    let combo = 0;
     const sndClick = new Audio("https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/Mouseclick.wav");
     const sndOi = new Audio("https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/oi%20oi%20oe%20oi%20a%20eye%20eye.mp3");
 
@@ -241,64 +230,57 @@
         { name: "Starter", min: 0n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s' },
         { name: "Moon", min: 500_000n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvD90oZ0SLUt9Hizd90BlaEeI4BtMrHiO1HA&s' },
         { name: "Galaxy", min: 1_000_000_000n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s' },
-        { name: "Infinity", min: 100_000_000_000_000n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9-ANfPq_7ESF0UHnzM6s3HLaSHie6F140Q&s' },
         { name: "Multiverse", min: 10n**18n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6-S7lS4G1lM3X-_73vG7D_Fz7q_0P9_vX7w&s' },
-        { name: "The Void", min: 10n**24n, bg: 'https://images.unsplash.com/photo-1538370965046-79c0d6907d47?q=80&w=1000' },
-        { name: "Singularity", min: 10n**30n, bg: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=1000' }
+        { name: "The Void", min: 10n**30n, bg: 'https://images.unsplash.com/photo-1538370965046-79c0d6907d47?q=80&w=1000' },
+        { name: "Singularity", min: 10n**100n, bg: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=1000' },
+        { name: "Absolute Infinity", min: 10n**300n, bg: 'https://images.unsplash.com/photo-1506318137071-a8e063b4bcc0?q=80&w=1000' }
     ];
 
     function save() {
-        localStorage.setItem('v9_score', score.toString()); localStorage.setItem('v9_pwr', clickPwr.toString());
-        localStorage.setItem('v9_costPwr', costPwr.toString()); localStorage.setItem('v9_helpers', helpers.toString());
-        localStorage.setItem('v9_costAuto', costAuto.toString()); localStorage.setItem('v9_eff', helperEff.toString());
-        localStorage.setItem('v9_costEff', costEff.toString()); localStorage.setItem('v9_critC', critC.toString());
-        localStorage.setItem('v9_costCritC', costCritC.toString()); localStorage.setItem('v9_critD', critD.toString());
-        localStorage.setItem('v9_costCritD', costCritD.toString()); localStorage.setItem('v9_multi', globalMult.toString());
-        localStorage.setItem('v9_costMulti', costMulti.toString()); localStorage.setItem('v9_rebirths', rebirths.toString());
-        localStorage.setItem('v9_decay', comboDecay.toString()); localStorage.setItem('v9_costDecay', costDecay.toString());
-        localStorage.setItem('v9_costWarp', costWarp.toString()); localStorage.setItem('v9_warp', warpFactor.toString());
-        localStorage.setItem('v9_costVoid', costVoid.toString()); localStorage.setItem('v9_voidM', voidMulti.toString());
+        localStorage.setItem('v10_score', score.toString()); localStorage.setItem('v10_pwr', clickPwr.toString());
+        localStorage.setItem('v10_costPwr', costPwr.toString()); localStorage.setItem('v10_helpers', helpers.toString());
+        localStorage.setItem('v10_costAuto', costAuto.toString()); localStorage.setItem('v10_eff', helperEff.toString());
+        localStorage.setItem('v10_costEff', costEff.toString()); localStorage.setItem('v10_critC', critC.toString());
+        localStorage.setItem('v10_costCritC', costCritC.toString()); localStorage.setItem('v10_critD', critD.toString());
+        localStorage.setItem('v10_costCritD', costCritD.toString()); localStorage.setItem('v10_multi', globalMult.toString());
+        localStorage.setItem('v10_costMulti', costMulti.toString()); localStorage.setItem('v10_rebirths', rebirths.toString());
+        localStorage.setItem('v10_decay', comboDecay.toString()); localStorage.setItem('v10_costDecay', costDecay.toString());
+        localStorage.setItem('v10_costWarp', costWarp.toString()); localStorage.setItem('v10_warp', warpFactor.toString());
+        localStorage.setItem('v10_costVoid', costVoid.toString()); localStorage.setItem('v10_voidM', voidMulti.toString());
     }
 
     function updateUI() {
         document.getElementById('scoreLabel').textContent = format(score);
         document.getElementById('mainButton').textContent = format(score);
         document.getElementById('pwrVal').textContent = format(clickPwr);
-        document.getElementById('comboVal').textContent = "x" + comboMult.toFixed(1);
-        document.getElementById('multVal').textContent = format(globalMult * voidMulti) + "x";
+        let cMult = 1000 + (combo * 25);
+        document.getElementById('comboVal').textContent = "x" + (cMult / 1000).toFixed(1);
+        document.getElementById('multVal').textContent = format((globalMult * voidMulti) / P) + "x";
         document.getElementById('critCVal').textContent = critC;
         document.getElementById('critDVal').textContent = critD;
         document.getElementById('rebirthBtn').textContent = `Rebirth (${rebirths})`;
 
         document.getElementById('costPwr').textContent = `Cost: ${format(costPwr)}`;
         document.getElementById('costAuto').textContent = `Cost: ${format(costAuto)}`;
-        document.getElementById('costEff').textContent = `Cost: ${format(costEff)} (${Math.round(helperEff*100)}%)`;
+        document.getElementById('costEff').textContent = `Cost: ${format(costEff)} (${(Number(helperEff)/10).toFixed(0)}%)`;
         document.getElementById('costCritC').textContent = `Cost: ${format(costCritC)}`;
         document.getElementById('costCritD').textContent = `Cost: ${format(costCritD)}`;
         document.getElementById('costMulti').textContent = `Cost: ${format(costMulti)}`;
         document.getElementById('costDecay').textContent = `Cost: ${format(costDecay)}`;
-        document.getElementById('costWarp').textContent = `Cost: ${format(costWarp)} (x${warpFactor.toFixed(1)})`;
+        document.getElementById('costWarp').textContent = `Cost: ${format(costWarp)} (x${(Number(warpFactor)/1000).toFixed(1)})`;
         document.getElementById('costVoid').textContent = `Cost: ${format(costVoid)}`;
 
         let idx = 0; for(let i=WORLDS.length-1; i>=0; i--) { if(score >= WORLDS[i].min) { idx = i; break; } }
         document.body.style.backgroundImage = `url('${WORLDS[idx].bg}')`;
         const n = WORLDS[idx+1];
         if(n) {
-            const pct = Number(((score - WORLDS[idx].min) * 1000n) / (n.min - WORLDS[idx].min)) / 10;
+            let pct = Number((score * 100n) / n.min); if(pct > 100) pct = 100;
             document.getElementById('progressBar').style.width = pct + "%";
-            document.getElementById('levelText').textContent = `${WORLDS[idx].name} -> ${pct.toFixed(1)}%`;
+            document.getElementById('levelText').textContent = `${WORLDS[idx].name} -> ${pct}%`;
         } else {
             document.getElementById('progressBar').style.width = "100%";
-            document.getElementById('levelText').textContent = "Ω REALM REACHED";
+            document.getElementById('levelText').textContent = "Ω OVERFLOW REACHED";
         }
-    }
-
-    function spawnParticle(x, y, txt, col) {
-        const p = document.createElement('div');
-        p.className = 'particle'; p.textContent = txt;
-        p.style.left = x + 'px'; p.style.top = y + 'px'; p.style.color = col || "white";
-        document.body.appendChild(p);
-        setTimeout(() => p.remove(), 800);
     }
 
     function doClick(e) {
@@ -307,65 +289,72 @@
         if(score >= 10n**16n) { sndOi.currentTime = 0; sndOi.play().catch(()=>{}); }
         
         combo = Math.min(100, combo + 4);
-        comboMult = 1.0 + (combo / 40);
+        let comboM = BigInt(1000 + (combo * 25));
 
         let isCrit = (Math.random() * 100) < critC;
-        let gain = BigInt(Math.floor(Math.random() * Number(clickPwr))) + 1n;
+        let gain = clickPwr;
         if(isCrit) gain *= BigInt(critD);
-        gain = BigInt(Math.floor(Number(gain) * globalMult * voidMulti * (rebirths + 1) * comboMult));
+
+        // Score = Power * GlobalMulti * VoidMulti * Rebirth * Combo / (Precision^3)
+        gain = (gain * globalMult * voidMulti * BigInt(rebirths + 1) * comboM) / (P * P * P);
+        if(gain < 1n) gain = 1n;
 
         score += gain;
         const x = e ? e.clientX : window.innerWidth/2;
         const y = e ? e.clientY : window.innerHeight/2;
-        spawnParticle(x, y, (isCrit?"🔥":"+")+format(gain), isCrit?"#ff9800":"white");
+        
+        const p = document.createElement('div');
+        p.className = 'particle'; p.textContent = (isCrit?"🔥":"+")+format(gain);
+        p.style.left = x + 'px'; p.style.top = y + 'px'; p.style.color = isCrit?"#ff9800":"white";
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 800);
+
         updateUI(); save();
     }
 
     function buy(t) {
-        if(t==='pwr' && score>=costPwr) { score-=costPwr; clickPwr=BigInt(Math.floor(Number(clickPwr)*2.8)); costPwr=BigInt(Math.floor(Number(costPwr)*3)); }
-        if(t==='auto' && score>=costAuto) { score-=costAuto; helpers++; costAuto=BigInt(Math.floor(Number(costAuto)*2.5)); }
-        if(t==='eff' && score>=costEff) { score-=costEff; helperEff+=0.25; costEff*=10n; }
+        if(t==='pwr' && score>=costPwr) { score-=costPwr; clickPwr=(clickPwr*28n)/10n; costPwr*=3n; }
+        if(t==='auto' && score>=costAuto) { score-=costAuto; helpers++; costAuto=(costAuto*25n)/10n; }
+        if(t==='eff' && score>=costEff) { score-=costEff; helperEff+=250n; costEff*=10n; }
         if(t==='critC' && score>=costCritC && critC<100) { score-=costCritC; critC+=3; costCritC*=7n; }
         if(t==='critD' && score>=costCritD) { score-=costCritD; critD+=5; costCritD*=10n; }
-        if(t==='multi' && score>=costMulti) { score-=costMulti; globalMult*=1.8; costMulti*=15n; }
+        if(t==='multi' && score>=costMulti) { score-=costMulti; globalMult=(globalMult*18n)/10n; costMulti*=15n; }
         if(t==='decay' && score>=costDecay) { score-=costDecay; comboDecay=Math.max(0.1, comboDecay-0.4); costDecay*=15n; }
-        if(t==='warp' && score>=costWarp) { score-=costWarp; warpFactor+=0.2; costWarp*=20n; }
-        if(t==='void' && score>=costVoid) { score-=costVoid; voidMulti *= 5.0; costVoid *= 50n; }
+        if(t==='warp' && score>=costWarp) { score-=costWarp; warpFactor+=200n; costWarp*=20n; }
+        if(t==='void' && score>=costVoid) { score-=costVoid; voidMulti*=5n; costVoid*=50n; }
         updateUI(); save();
     }
 
     document.getElementById('rebirthBtn').onclick = () => {
         const target = 100_000_000_000n;
         if(score >= target) {
-            if(confirm("REBIRTH? Prices will reset but you'll gain a massive permanent boost!")) {
+            if(confirm("REBIRTH? Prices reset, but you keep your multiplier boost!")) {
                 rebirths++;
-                // RESET TO DEFAULTS
                 score = BigInt(DEFAULTS.score); clickPwr = BigInt(DEFAULTS.pwr); costPwr = BigInt(DEFAULTS.costPwr);
-                helpers = DEFAULTS.helpers; costAuto = BigInt(DEFAULTS.costAuto); helperEff = DEFAULTS.eff;
+                helpers = DEFAULTS.helpers; costAuto = BigInt(DEFAULTS.costAuto); helperEff = BigInt(DEFAULTS.eff);
                 costEff = BigInt(DEFAULTS.costEff); critC = DEFAULTS.critC; costCritC = BigInt(DEFAULTS.costCritC);
-                critD = DEFAULTS.critD; costCritD = BigInt(DEFAULTS.costCritD); globalMult = DEFAULTS.multi;
+                critD = DEFAULTS.critD; costCritD = BigInt(DEFAULTS.costCritD); globalMult = BigInt(DEFAULTS.multi);
                 costMulti = BigInt(DEFAULTS.costMulti); comboDecay = DEFAULTS.decay; costDecay = BigInt(DEFAULTS.costDecay);
-                costWarp = BigInt(DEFAULTS.costWarp); warpFactor = DEFAULTS.warp; costVoid = BigInt(DEFAULTS.costVoid);
-                voidMulti = DEFAULTS.voidM;
+                costWarp = BigInt(DEFAULTS.costWarp); warpFactor = BigInt(DEFAULTS.warp); costVoid = BigInt(DEFAULTS.costVoid);
+                voidMulti = BigInt(DEFAULTS.voidM);
                 save(); location.reload();
             }
-        } else alert(`Need ${format(target)} for Rebirth!`);
+        } else alert(`Need ${format(target)} to Rebirth!`);
     }
 
     setInterval(() => {
         if(helpers > 0) {
-            let aGain = BigInt(Math.floor(Number(clickPwr) * helpers * helperEff * (warpFactor)));
-            aGain = BigInt(Math.floor(Number(aGain) * globalMult * voidMulti * (rebirths + 1)));
+            let aGain = (clickPwr * BigInt(helpers) * helperEff * warpFactor * globalMult * voidMulti * BigInt(rebirths + 1)) / (P * P * P * P);
             score += aGain; updateUI();
         }
-        combo = Math.max(0, combo - (comboDecay / warpFactor));
-        comboMult = 1.0 + (combo / 40);
+        let warpDecay = comboDecay / (Number(warpFactor)/1000);
+        combo = Math.max(0, combo - warpDecay);
         document.getElementById('comboBar').style.width = combo + "%";
     }, 1000);
 
     document.getElementById('mainButton').onmousedown = doClick;
     window.onkeyup = (e) => { if([' ','Enter'].includes(e.key)) doClick(); };
-    document.getElementById('resetBtn').onclick = () => { if(confirm("DELETE EVERYTHING?")) { localStorage.clear(); location.reload(); }};
+    document.getElementById('resetBtn').onclick = () => { if(confirm("DELETE ALL DATA?")) { localStorage.clear(); location.reload(); }};
     updateUI();
 </script>
 </body>
