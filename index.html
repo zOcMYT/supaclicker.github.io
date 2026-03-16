@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supa Clicker v1.3.5</title>
+    <title>Supa Clicker v2</title>
     <link rel="icon" href="https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/ButtonIcon.png">
 
     <style>
@@ -20,6 +20,7 @@
             height: 100vh; width: 100vw;
             display: flex; justify-content: center; align-items: center;
             user-select: none;
+            transition: background-image 1.2s ease-in-out;
         }
 
         #gameWrapper {
@@ -124,7 +125,7 @@
 <div id="cookieOverlay">
     <div class="cookie-box">
         <h1 style="color: #ffeb3b;">Cookies?</h1>
-        <p style="font-size: 1.3rem;">Would you like to accept cookies?</p>
+        <p style="font-size: 1.3rem;">Would you like to accept cookies to enhance your experience?</p>
         <button class="cookie-btn" onclick="closeCookies()">Block Cookies</button>
         <button class="cookie-btn" onclick="closeCookies()">Block Cookies</button>
     </div>
@@ -135,7 +136,7 @@
         <div id="topUI">
             <div id="progessContainer">
                 <div id="progressBar"></div>
-                <div id="levelText">Synchronizing...</div>
+                <div id="levelText">Linking to Multiverse...</div>
             </div>
             <button id="rebirthBtn">Rebirth (0)</button>
             <button id="resetBtn">Full Reset</button>
@@ -170,17 +171,14 @@
 <script>
     function closeCookies() { document.getElementById('cookieOverlay').style.display = 'none'; }
 
-    // --- INFINITE FORMATTER ---
     function format(n) {
         let s = n.toString();
         if (s.length <= 7) return parseInt(s).toLocaleString();
-        // Custom style: 261.99e+38
         let m = s.substring(0, 3) + "." + s.substring(3, 5);
         let exp = s.length - 3;
         return m + "e+" + exp;
     }
 
-    // --- RESPONSIVE FIX ---
     function handleResize() {
         const container = document.getElementById('gameContainer');
         const scale = Math.min(window.innerWidth / 1600, window.innerHeight / 900);
@@ -189,10 +187,7 @@
     window.addEventListener('resize', handleResize);
     handleResize();
 
-    // --- BIGINT MATH UTILS ---
-    // Multipliers are handled as "Precision BigInts" (Val / 1000)
     const P = 1000n; 
-
     const DEFAULTS = {
         score: "0", pwr: "5", costPwr: "250", helpers: 0, costAuto: "500",
         eff: "500", costEff: "5000", critC: 10, costCritC: "2500",
@@ -201,52 +196,60 @@
         costVoid: "500000000", voidM: "1000"
     };
 
-    let score = BigInt(localStorage.getItem('v10_score') || DEFAULTS.score);
-    let clickPwr = BigInt(localStorage.getItem('v10_pwr') || DEFAULTS.pwr);
-    let costPwr = BigInt(localStorage.getItem('v10_costPwr') || DEFAULTS.costPwr);
-    let helpers = parseInt(localStorage.getItem('v10_helpers') || DEFAULTS.helpers);
-    let costAuto = BigInt(localStorage.getItem('v10_costAuto') || DEFAULTS.costAuto);
-    let helperEff = BigInt(localStorage.getItem('v10_eff') || DEFAULTS.eff);
-    let costEff = BigInt(localStorage.getItem('v10_costEff') || DEFAULTS.costEff);
-    let critC = parseInt(localStorage.getItem('v10_critC') || DEFAULTS.critC);
-    let costCritC = BigInt(localStorage.getItem('v10_costCritC') || DEFAULTS.costCritC);
-    let critD = parseInt(localStorage.getItem('v10_critD') || DEFAULTS.critD);
-    let costCritD = BigInt(localStorage.getItem('v10_costCritD') || DEFAULTS.costCritD);
-    let globalMult = BigInt(localStorage.getItem('v10_multi') || DEFAULTS.multi);
-    let costMulti = BigInt(localStorage.getItem('v10_costMulti') || DEFAULTS.costMulti);
-    let rebirths = parseInt(localStorage.getItem('v10_rebirths') || "0");
-    let comboDecay = parseFloat(localStorage.getItem('v10_decay') || DEFAULTS.decay);
-    let costDecay = BigInt(localStorage.getItem('v10_costDecay') || DEFAULTS.costDecay);
-    let costWarp = BigInt(localStorage.getItem('v10_costWarp') || DEFAULTS.costWarp);
-    let warpFactor = BigInt(localStorage.getItem('v10_warp') || DEFAULTS.warp);
-    let costVoid = BigInt(localStorage.getItem('v10_costVoid') || DEFAULTS.costVoid);
-    let voidMulti = BigInt(localStorage.getItem('v10_voidM') || DEFAULTS.voidM);
+    let score = BigInt(localStorage.getItem('v11_score') || DEFAULTS.score);
+    let clickPwr = BigInt(localStorage.getItem('v11_pwr') || DEFAULTS.pwr);
+    let costPwr = BigInt(localStorage.getItem('v11_costPwr') || DEFAULTS.costPwr);
+    let helpers = parseInt(localStorage.getItem('v11_helpers') || DEFAULTS.helpers);
+    let costAuto = BigInt(localStorage.getItem('v11_costAuto') || DEFAULTS.costAuto);
+    let helperEff = BigInt(localStorage.getItem('v11_eff') || DEFAULTS.eff);
+    let costEff = BigInt(localStorage.getItem('v11_costEff') || DEFAULTS.costEff);
+    let critC = parseInt(localStorage.getItem('v11_critC') || DEFAULTS.critC);
+    let costCritC = BigInt(localStorage.getItem('v11_costCritC') || DEFAULTS.costCritC);
+    let critD = parseInt(localStorage.getItem('v11_critD') || DEFAULTS.critD);
+    let costCritD = BigInt(localStorage.getItem('v11_costCritD') || DEFAULTS.costCritD);
+    let globalMult = BigInt(localStorage.getItem('v11_multi') || DEFAULTS.multi);
+    let costMulti = BigInt(localStorage.getItem('v11_costMulti') || DEFAULTS.costMulti);
+    let rebirths = parseInt(localStorage.getItem('v11_rebirths') || "0");
+    let comboDecay = parseFloat(localStorage.getItem('v11_decay') || DEFAULTS.decay);
+    let costDecay = BigInt(localStorage.getItem('v11_costDecay') || DEFAULTS.costDecay);
+    let costWarp = BigInt(localStorage.getItem('v11_costWarp') || DEFAULTS.costWarp);
+    let warpFactor = BigInt(localStorage.getItem('v11_warp') || DEFAULTS.warp);
+    let costVoid = BigInt(localStorage.getItem('v11_costVoid') || DEFAULTS.costVoid);
+    let voidMulti = BigInt(localStorage.getItem('v11_voidM') || DEFAULTS.voidM);
 
     let combo = 0;
     const sndClick = new Audio("https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/Mouseclick.wav");
     const sndOi = new Audio("https://raw.githubusercontent.com/zOcMYT/supaclicker.github.io/main/oi%20oi%20oe%20oi%20a%20eye%20eye.mp3");
 
     const WORLDS = [
-        { name: "Starter", min: 0n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhQhK_wQIRUwpbM_pXJHn18sC8ovXBGirUpQ&s' },
-        { name: "Moon", min: 500_000n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvD90oZ0SLUt9Hizd90BlaEeI4BtMrHiO1HA&s' },
-        { name: "Galaxy", min: 1_000_000_000n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0fLUcPj6yXtpt7TsigDNgcijL3CSWuSAzQ&s' },
-        { name: "Multiverse", min: 10n**18n, bg: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6-S7lS4G1lM3X-_73vG7D_Fz7q_0P9_vX7w&s' },
+        { name: "Starter", min: 0n, bg: 'https://images.unsplash.com/photo-1516331138075-f3ad15d6ff01?q=80&w=2000' },
+        { name: "Moon", min: 500_000n, bg: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=2000' },
+        { name: "Galaxy", min: 10n**9n, bg: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2000' },
+        { name: "Multiverse", min: 10n**18n, bg: 'https://images.unsplash.com/photo-1506318137071-a8e063b4bcc0?q=80&w=2000' },
         { name: "The Void", min: 10n**30n, bg: 'https://images.unsplash.com/photo-1538370965046-79c0d6907d47?q=80&w=1000' },
-        { name: "Singularity", min: 10n**100n, bg: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=1000' },
-        { name: "Absolute Infinity", min: 10n**300n, bg: 'https://images.unsplash.com/photo-1506318137071-a8e063b4bcc0?q=80&w=1000' }
+        { name: "Singularity", min: 10n**100n, bg: 'https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?q=80&w=2000' },
+        { name: "Absolute Infinity", min: 10n**300n, bg: 'https://images.unsplash.com/photo-1543722530-d2c3201371e7?q=80&w=2000' },
+        { name: "Hyper-Void", min: 10n**500n, bg: 'https://images.unsplash.com/photo-1465101162946-4377e57745c3?q=80&w=2000' },
+        { name: "Celestial Nexus", min: 10n**1000n, bg: 'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?q=80&w=2000' },
+        { name: "Quantum Sea", min: 10n**2500n, bg: 'https://images.unsplash.com/photo-1478147427282-58a87a120781?q=80&w=2000' },
+        { name: "Reality Warp", min: 10n**5000n, bg: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000' },
+        { name: "Transcendence", min: 10n**10000n, bg: 'https://images.unsplash.com/photo-1541410965313-5996e5c0378b?q=80&w=2000' },
+        { name: "Chronos Realm", min: 10n**20000n, bg: 'https://images.unsplash.com/photo-1504333638930-c8787321eba0?q=80&w=2000' },
+        { name: "Omega Point", min: 10n**35000n, bg: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=2000' },
+        { name: "The Source", min: 10n**50000n, bg: 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2000' }
     ];
 
     function save() {
-        localStorage.setItem('v10_score', score.toString()); localStorage.setItem('v10_pwr', clickPwr.toString());
-        localStorage.setItem('v10_costPwr', costPwr.toString()); localStorage.setItem('v10_helpers', helpers.toString());
-        localStorage.setItem('v10_costAuto', costAuto.toString()); localStorage.setItem('v10_eff', helperEff.toString());
-        localStorage.setItem('v10_costEff', costEff.toString()); localStorage.setItem('v10_critC', critC.toString());
-        localStorage.setItem('v10_costCritC', costCritC.toString()); localStorage.setItem('v10_critD', critD.toString());
-        localStorage.setItem('v10_costCritD', costCritD.toString()); localStorage.setItem('v10_multi', globalMult.toString());
-        localStorage.setItem('v10_costMulti', costMulti.toString()); localStorage.setItem('v10_rebirths', rebirths.toString());
-        localStorage.setItem('v10_decay', comboDecay.toString()); localStorage.setItem('v10_costDecay', costDecay.toString());
-        localStorage.setItem('v10_costWarp', costWarp.toString()); localStorage.setItem('v10_warp', warpFactor.toString());
-        localStorage.setItem('v10_costVoid', costVoid.toString()); localStorage.setItem('v10_voidM', voidMulti.toString());
+        localStorage.setItem('v11_score', score.toString()); localStorage.setItem('v11_pwr', clickPwr.toString());
+        localStorage.setItem('v11_costPwr', costPwr.toString()); localStorage.setItem('v11_helpers', helpers.toString());
+        localStorage.setItem('v11_costAuto', costAuto.toString()); localStorage.setItem('v11_eff', helperEff.toString());
+        localStorage.setItem('v11_costEff', costEff.toString()); localStorage.setItem('v11_critC', critC.toString());
+        localStorage.setItem('v11_costCritC', costCritC.toString()); localStorage.setItem('v11_critD', critD.toString());
+        localStorage.setItem('v11_costCritD', costCritD.toString()); localStorage.setItem('v11_multi', globalMult.toString());
+        localStorage.setItem('v11_costMulti', costMulti.toString()); localStorage.setItem('v11_rebirths', rebirths.toString());
+        localStorage.setItem('v11_decay', comboDecay.toString()); localStorage.setItem('v11_costDecay', costDecay.toString());
+        localStorage.setItem('v11_costWarp', costWarp.toString()); localStorage.setItem('v11_warp', warpFactor.toString());
+        localStorage.setItem('v11_costVoid', costVoid.toString()); localStorage.setItem('v11_voidM', voidMulti.toString());
     }
 
     function updateUI() {
@@ -271,7 +274,9 @@
         document.getElementById('costVoid').textContent = `Cost: ${format(costVoid)}`;
 
         let idx = 0; for(let i=WORLDS.length-1; i>=0; i--) { if(score >= WORLDS[i].min) { idx = i; break; } }
-        document.body.style.backgroundImage = `url('${WORLDS[idx].bg}')`;
+        if (document.body.style.backgroundImage !== `url("${WORLDS[idx].bg}")`) {
+            document.body.style.backgroundImage = `url('${WORLDS[idx].bg}')`;
+        }
         const n = WORLDS[idx+1];
         if(n) {
             let pct = Number((score * 100n) / n.min); if(pct > 100) pct = 100;
@@ -279,7 +284,7 @@
             document.getElementById('levelText').textContent = `${WORLDS[idx].name} -> ${pct}%`;
         } else {
             document.getElementById('progressBar').style.width = "100%";
-            document.getElementById('levelText').textContent = "Ω OVERFLOW REACHED";
+            document.getElementById('levelText').textContent = "THE SOURCE REACHED";
         }
     }
 
@@ -290,12 +295,9 @@
         
         combo = Math.min(100, combo + 4);
         let comboM = BigInt(1000 + (combo * 25));
-
         let isCrit = (Math.random() * 100) < critC;
         let gain = clickPwr;
         if(isCrit) gain *= BigInt(critD);
-
-        // Score = Power * GlobalMulti * VoidMulti * Rebirth * Combo / (Precision^3)
         gain = (gain * globalMult * voidMulti * BigInt(rebirths + 1) * comboM) / (P * P * P);
         if(gain < 1n) gain = 1n;
 
@@ -308,7 +310,6 @@
         p.style.left = x + 'px'; p.style.top = y + 'px'; p.style.color = isCrit?"#ff9800":"white";
         document.body.appendChild(p);
         setTimeout(() => p.remove(), 800);
-
         updateUI(); save();
     }
 
@@ -328,7 +329,7 @@
     document.getElementById('rebirthBtn').onclick = () => {
         const target = 100_000_000_000n;
         if(score >= target) {
-            if(confirm("REBIRTH? Prices reset, but you keep your multiplier boost!")) {
+            if(confirm("REBIRTH? Your stats will reset to gain a massive permanent boost!")) {
                 rebirths++;
                 score = BigInt(DEFAULTS.score); clickPwr = BigInt(DEFAULTS.pwr); costPwr = BigInt(DEFAULTS.costPwr);
                 helpers = DEFAULTS.helpers; costAuto = BigInt(DEFAULTS.costAuto); helperEff = BigInt(DEFAULTS.eff);
@@ -339,7 +340,7 @@
                 voidMulti = BigInt(DEFAULTS.voidM);
                 save(); location.reload();
             }
-        } else alert(`Need ${format(target)} to Rebirth!`);
+        } else alert(`Need ${format(target)} for Rebirth!`);
     }
 
     setInterval(() => {
